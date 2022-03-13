@@ -1,10 +1,10 @@
 <template>
     <div>
-        <section>
-            <button>signup</button>
-            <button>LOGIN</button>
+        <section v-if="this.section_view === 0">
+            <button type="button">signup</button>
+            <button type="button">LOGIN</button>
         </section>
-        <section>
+        <section v-else-if="this.section_view === 1">
             <h3>login</h3>
             <form action="javascript:void(0)" id="login_form">
                 <label for="username">username</label>
@@ -14,7 +14,7 @@
                 <button type="submit" form="login_form" value="Submit">LOGIN</button>
             </form>
         </section>
-        <section>
+        <section v-else-if="this.section_view === 2">
             <h3>signup</h3>
             <form action="javascript:void(0)" id="create_user">
                 <label for="username">username</label>
@@ -31,7 +31,7 @@
                 <button type="submit" form="create_user" value="Submit">signup</button>
             </form>
         </section>
-        <section>
+        <section v-else>
             <h3>Welcome User!</h3>
             <form action="javascript:void(0)" id="game_token_form">
                 <label for="game_token">please enter game token to join game </label>
@@ -43,23 +43,30 @@
         </section>
         <!-- <button-input />
         <form-input /> -->
+        <user-request />
+        <game-request />
     </div>
 </template>
 
 <script>
+import UserRequest from "@/components/RequestElement/UserRequest.vue";
+import GameRequest from "@/components/RequestElement/GameRequest.vue";
 // import ButtonInput from "@/components/VisualElement/ButtonInput.vue";
 // import FormInput from "@/components/VisualElement/FormInput.vue";
 
 export default {
     name: 'login-container',
     components: {
+        UserRequest,
+        GameRequest,
         // ButtonInput,
         // FormInput,
     },
     data() {
         return {
             age_limit: 13,
-            birthdate_limit: undefined
+            birthdate_limit: undefined,
+            section_view: 1
         }
     },
     methods: {
@@ -79,6 +86,8 @@ export default {
 section {
     display: grid;
     place-items: center;
+    height: 70%;
+    margin: 10%;
 }
 
 form {

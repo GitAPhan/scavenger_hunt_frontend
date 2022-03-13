@@ -1,37 +1,56 @@
 <template>
-  <div id="app">
-    <transition name="transition_page_flip" mode="out-in">
-      <router-view></router-view>
-    </transition>
-  </div>
+  <v-app>
+    <v-app-bar
+      app
+      color="primary"
+      dark
+    >
+      <div class="d-flex align-center">
+        <v-img
+          alt="Vuetify Logo"
+          class="shrink mr-2"
+          contain
+          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+          transition="scale-transition"
+          width="40"
+        />
+
+        <v-img
+          alt="Vuetify Name"
+          class="shrink mt-1 hidden-sm-and-down"
+          contain
+          min-width="100"
+          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
+          width="100"
+        />
+      </div>
+
+      <v-spacer></v-spacer>
+
+      <v-btn
+        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        target="_blank"
+        text
+      >
+        <span class="mr-2">Latest Release</span>
+        <v-icon>mdi-open-in-new</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <v-main>
+      <router-view/>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
+
+
+export default {
+  name: 'App',
+
+  data: () => ({
+    //
+  }),
+};
 </script>
-
-<style>
-.transition_page_flip-enter-active,
-.transition_page_flip-leave-active {
-  transition: all 0.45s ease-in-out;
-}
-
-.transition_page_flip-leave-to {
-  opacity: 0;
-  transform: translateX(-20vw);
-}
-
-.transition_page_flip-enter {
-  opacity: 0;
-  transform: translateX(20vw);
-}
-
-.transition_page_flip-enter-to,
-.transition_page_flip-leave {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-#app {
-  overflow: hidden;
-}
-</style>

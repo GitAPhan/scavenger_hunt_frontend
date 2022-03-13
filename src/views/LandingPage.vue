@@ -1,6 +1,6 @@
 <template>
     <div>
-        <section>
+        <section class="title_block">
             <h1>SCAVENGER</h1>
             <h1>HUNT</h1>
         </section>
@@ -20,8 +20,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-section {
+.title_block {
     display: grid;
     place-items: center;
+    height: 30vh;
+    row-gap: 0px;
+    font-size: 30px;
+
+    >h1:nth-child(1) {
+        align-self: end;
+    }
+
+    >h1:nth-child(2) {
+        align-self: start;
+    }
+}
+
+div {
+    height: 70vh;
 }
 </style>
