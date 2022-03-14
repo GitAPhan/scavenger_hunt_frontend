@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="request_container">
 
     </div>
 </template>
@@ -16,5 +16,7 @@
 </script>
 
 <style lang="scss" scoped>
-
+.request_container {
+    display: none;
+}
 </style>
