@@ -4,8 +4,20 @@
             <h1>SCAVENGER</h1>
             <h1>HUNT</h1>
         </section>
-        <login-container @check_username="check_username" :check_username_message="check_username_message" class="landing_container" />
-        <user-request :username_to_check="username_to_check" @update_check_username_message="update_check_username_message" />
+        <login-container
+            :user_response="user_response"
+            :user_response_message="user_response_message"
+            @create_user_request="create_user_request"
+            @check_username="check_username"
+            :check_username_message="check_username_message"
+            class="landing_container"
+        />
+        <user-request
+            @post_response="post_response"
+            :create_user="create_user"
+            :username_to_check="username_to_check"
+            @update_check_username_message="update_check_username_message"
+        />
         <game-request />
     </div>
 </template>
@@ -25,7 +37,14 @@ export default {
     data() {
         return {
             username_to_check: undefined,
-            check_username_message: undefined
+            check_username_message: {
+                response: undefined,
+                status: true
+            },
+            create_user: undefined,
+            user_response: undefined,
+            user_response_message: '',
+            user_profile: undefined,
         }
     },
     methods: {
@@ -33,11 +52,22 @@ export default {
             let tabs = false
             this.$emit('tab_info', tabs)
         },
-        check_username (payload) {
+        check_username(payload) {
             this.username_to_check = payload
         },
-        update_check_username_message (payload) {
-            this.check_username_message = payload['response']
+        update_check_username_message(payload) {
+            this.check_username_message = payload
+        },
+        create_user_request(payload) {
+            this.create_user = payload
+        },
+        post_response(response) {
+            this.user_response = response.status
+            if (response.status) {
+                this.user_profile = response.response
+            } else {
+                this.user_response_message = response.response
+            }
         }
     },
     mounted() {
@@ -53,7 +83,7 @@ export default {
     height: 30vh;
     row-gap: 0px;
     font-size: 30px;
-    border: black .5px solid;
+    border: black 0.5px solid;
 
     > h1:nth-child(1) {
         align-self: end;
