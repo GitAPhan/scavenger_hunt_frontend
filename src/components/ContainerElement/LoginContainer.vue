@@ -4,13 +4,13 @@
             <!-- signup/login selection -->
             <section v-if="this.section_view === 0">
                 <div class="spacer"></div>
-                <v-btn color="primary" @click="switcher = 2">
+                <v-btn bottom color="primary" @click="switcher = 2">
                     signup
                     <!-- <template v-slot:loader>
                         <span>Loading...</span>
                     </template>-->
                 </v-btn>
-                <v-btn color="primary" @click="switcher = 1">
+                <v-btn top color="primary" @click="switcher = 1">
                     LOGIN
                     <!-- <template v-slot:loader>
                         <span>Loading...</span>
@@ -50,7 +50,7 @@
             <!-- signup -->
             <section v-else-if="this.section_view === 2">
                 <h3>signup</h3>
-                <validation-observer ref="observer" v-slot="{ invalid }">
+                <validation-observer ref="observer" v-slot="{ valid }">
                     <form @submit.prevent="submit">
                         <div class="login_scroll">
                             <validation-provider
@@ -123,9 +123,12 @@
                                 ></v-checkbox>
                             </validation-provider>
                         </div>
+                        <v-btn v-if="!valid" :disabled="true">signup</v-btn>
                         <v-btn
+                            v-else
                             type="submit"
-                            :disabled="invalid"
+                            :loading="signup_loading"
+                            :disabled="signup_loading"
                             @click="loader = 'signup_loading'"
                         >signup</v-btn>
                         <v-btn @click="clear">clear</v-btn>
@@ -135,7 +138,7 @@
             <!-- create/join game -->
             <section v-else-if="this.section_view === 3">
                 <h3>Welcome User!</h3>
-                <validation-observer class="place_center" ref="observer" v-slot="{ invalid }">
+                <validation-observer ref="observer" class="place_center">
                     <form>
                         <validation-provider
                                 v-slot="{ errors }"
@@ -152,7 +155,7 @@
                             ></v-text-field>
                         </validation-provider>
 
-                        <v-btn type="submit" :disabled="invalid" @click="join_game">join game</v-btn>
+                        <v-btn type="submit" :disabled="game_token.length != 7" @click="join_game">join game</v-btn>
                         <label for="create_game">or</label>
                     </form>
                     <v-btn
@@ -212,8 +215,6 @@ export default {
     },
     data() {
         return {
-            age_limit: 13,
-            birthdate_limit: undefined,
             section_view: 0,
             loader: null,
             switcher: null,
@@ -257,30 +258,30 @@ export default {
             this.$refs.observer.validate()
         },
         clear() {
-            this.name = ''
-            this.username = ''
-            this.email = ''
-            this.select = null
-            this.checkbox = null
+            this.signup_name = ''
+            this.signup_username = ''
+            this.signup_email = ''
+            this.signup_password = ''
+            this.signup_checkbox = null
             this.$refs.observer.reset()
         },
         signup() {
             this.section_view = 3
+        },
+        create_game() {
             console.log(this.signup_name)
             console.log(this.signup_email)
             console.log(this.signup_username)
             console.log(this.signup_password)
             console.log(this.signup_checkbox)
-        },
-        join_game() {
-            console.log(this.game_token)
-        },
-        create_game() {
             console.log(this.game_token)
             this.$router.push({
                 name: 'PlayerPage'
             })
-        }
+        },
+        join_game() {
+            this.create_game()
+        },
     },
     mounted() {
 
