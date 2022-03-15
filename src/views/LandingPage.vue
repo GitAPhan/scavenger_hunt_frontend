@@ -4,8 +4,8 @@
             <h1>SCAVENGER</h1>
             <h1>HUNT</h1>
         </section>
-        <login-container class="landing_container" />
-        <user-request />
+        <login-container @check_username="check_username" :check_username_message="check_username_message" class="landing_container" />
+        <user-request :username_to_check="username_to_check" @update_check_username_message="update_check_username_message" />
         <game-request />
     </div>
 </template>
@@ -22,10 +22,22 @@ export default {
         GameRequest,
         LoginContainer,
     },
+    data() {
+        return {
+            username_to_check: undefined,
+            check_username_message: undefined
+        }
+    },
     methods: {
         emit_tab_info() {
             let tabs = false
             this.$emit('tab_info', tabs)
+        },
+        check_username (payload) {
+            this.username_to_check = payload
+        },
+        update_check_username_message (payload) {
+            this.check_username_message = payload['response']
         }
     },
     mounted() {

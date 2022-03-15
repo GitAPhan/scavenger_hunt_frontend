@@ -56,13 +56,15 @@
                             <validation-provider
                                 v-slot="{ errors }"
                                 name="username"
-                                rules="required|max:30"
+                                rules="required|max:30|min:8"
                             >
                                 <v-text-field
                                     v-model="signup_username"
                                     :counter="30"
                                     :error-messages="errors"
                                     label="username"
+                                    @keyup="check_username"
+                                    :hint="check_username_message"
                                     placeholder="used to sign-in"
                                     required
                                 ></v-text-field>
@@ -141,10 +143,10 @@
                 <validation-observer ref="observer" class="place_center">
                     <form>
                         <validation-provider
-                                v-slot="{ errors }"
-                                name="game_token"
-                                rules="required|length:7"
-                            >
+                            v-slot="{ errors }"
+                            name="game_token"
+                            rules="required|length:7"
+                        >
                             <v-text-field
                                 v-model="game_token"
                                 :counter="7"
@@ -155,7 +157,11 @@
                             ></v-text-field>
                         </validation-provider>
 
-                        <v-btn type="submit" :disabled="game_token.length != 7" @click="join_game">join game</v-btn>
+                        <v-btn
+                            type="submit"
+                            :disabled="game_token.length != 7"
+                            @click="join_game"
+                        >join game</v-btn>
                         <label for="create_game">or</label>
                     </form>
                     <v-btn
@@ -237,6 +243,9 @@ export default {
             game_token: '',
         }
     },
+    props: {
+        check_username_message: String,
+    },
     watch: {
         loader() {
             const x = this.loader
@@ -282,6 +291,11 @@ export default {
         join_game() {
             this.create_game()
         },
+        check_username() {
+            if (this.signup_username.length >= 8) {
+                this.$emit("check_username", this.signup_username)
+            }
+        }
     },
     mounted() {
 
@@ -292,6 +306,7 @@ export default {
 <style lang="scss" scoped>
 .login_scroll {
     height: 44vh;
+    min-width: 80vw;
     overflow-y: scroll;
     overflow-x: hidden;
 }
