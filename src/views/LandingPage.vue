@@ -4,7 +4,7 @@
             <h1>SCAVENGER</h1>
             <h1>HUNT</h1>
         </section>
-        <login-container />
+        <login-container class="landing_container" />
         <user-request />
         <game-request />
     </div>
@@ -52,7 +52,8 @@ export default {
     }
 }
 
-div {
+.landing_container {
     height: 70vh;
+    overflow: hidden;
 }
 </style>

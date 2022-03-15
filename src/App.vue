@@ -55,7 +55,7 @@
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
       <template v-slot:extension>
-        <v-tabs v-model="tab" fixed-tabs>
+        <v-tabs v-model="tab_location" fixed-tabs>
           <v-tabs-slider color="yellow"></v-tabs-slider>
 
           <v-tab v-for="tab in tabs" :key="tab.text">{{ tab.title }}</v-tab>
@@ -63,7 +63,7 @@
       </template>
     </v-app-bar>
 
-    <v-tabs-items v-model="tab">
+    <v-tabs-items v-model="tab_location">
       <v-tab-item v-for="tab in tabs" :key="tab.id">
         <v-card flat>
           <v-card-text v-text="tab.title"></v-card-text>
@@ -96,7 +96,8 @@ export default {
         { title: 'About Us', icon: 'mdi-information-outline', to: '/aboutus' }
 
       ],
-      tabs: null,
+      tab_location: null,
+      tabs: false,
       right: null,
       drawer: null,
     }
@@ -104,11 +105,17 @@ export default {
   methods: {
     get_tab_info(payload) {
       this.tabs = payload
+      // set to middle tab when switching pages
+      this.tab_location = 1
     }
   },
 };
 </script>
 <style>
+* {
+  /* color: white; */
+}
+
 .transition_page_flip-enter-active,
 .transition_page_flip-leave-active {
   transition: all 0.45s ease-in-out;
@@ -130,7 +137,9 @@ export default {
   transform: translateX(0);
 }
 
-/* #app {
+#app {
   overflow: hidden;
-} */
+  max-height: 100vh;
+  /* background-color: black; */
+}
 </style>
