@@ -115,7 +115,7 @@ export default {
 * {
   /* color: white; */
 }
-
+/* // transition settings // */
 .transition_page_flip-enter-active,
 .transition_page_flip-leave-active {
   transition: all 0.45s ease-in-out;
