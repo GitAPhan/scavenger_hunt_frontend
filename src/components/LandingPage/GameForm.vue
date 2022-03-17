@@ -209,11 +209,13 @@ export default {
             this.$refs.observer.validate()
         },
         request_success: function (payload) {
+            this.clear()
             this.$emit("game_response", payload)
             // update cookie
             this.$cookies.set('token', payload)
         },
         request_error: function (payload) {
+            this.clear()
             // user displayed error
             this.error_message = payload
             this.is_error = !this.is_error
@@ -226,7 +228,6 @@ export default {
             // loader on
             this.loading = !this.loading
             var request_data = {
-                "gameToken": this.room_code,
                 "gameName": this.game_name,
             }
             var token = undefined
@@ -249,14 +250,39 @@ export default {
                 this.request_success(res.data)
             }).catch((err) => {
                 this.request_error(err.response.data)
-            }).then(() => {
-                this.clear()
             })
         },
         join_game: function () {
-            setTimeout(() => { this.loading = !this.loading }, 2000)
-            console.log(this.room_code)
-            this.clear()
+            // setTimeout(() => { this.loading = !this.loading }, 2000)
+            // console.log(this.room_code)
+            // this.clear()
+
+            // loader on
+            this.loading = !this.loading
+            var request_data = {
+                "gameToken": this.room_code,
+            }
+            var token = undefined
+            // create request data
+            if (JSON.stringify(this.request_data) === "{}") {
+                token = this.$cookies.get('token')
+            } else {
+                token = this.request_data
+            }
+            var request_key = ["tempToken", "loginId", "userId"]
+            for (var i = 0; i < request_key.length; i++) {
+                request_data[request_key[i]] = token[request_key[i]]
+            }
+            // request
+            this.$axios.request({
+                url: "http://localhost:5000/api/login",
+                method: "PATCH",
+                data: request_data
+            }).then((res) => {
+                this.request_success(res.data)
+            }).catch((err) => {
+                this.request_error(err.response.data)
+            })
         },
 
     },

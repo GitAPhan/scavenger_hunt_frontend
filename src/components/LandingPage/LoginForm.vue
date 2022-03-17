@@ -131,10 +131,12 @@ export default {
                 method: "POST",
                 data: request_data
             }).then((res) => {
+                this.clear()
                 // set cookie with temp token
                 this.$cookies.set('token', res.data)
                 this.$emit('post_response', res.data)
             }).catch((err) => {
+                this.clear()
                 this.is_error = !this.is_error
                 this.error_message = err.response.data
                 setTimeout(() => {
@@ -142,7 +144,6 @@ export default {
                     this.is_error = !this.is_error
                 }, 3000)
             }).then(() => {
-                this.clear()
                 this.loading = !this.loading
             })
         }

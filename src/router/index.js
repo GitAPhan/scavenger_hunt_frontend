@@ -12,7 +12,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'landing-page',
+    name: 'LandingPage',
     component: LandingPage
   },
   {

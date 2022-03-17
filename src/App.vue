@@ -73,7 +73,7 @@
 
     <v-main>
       <transition name="transition_page_flip" mode="out-in">
-        <router-view @tab_info="get_tab_info" />
+        <router-view @unauthorized_access="unauthorized_access" @tab_info="get_tab_info" />
       </transition>
     </v-main>
   </v-app>
@@ -107,6 +107,9 @@ export default {
       this.tabs = payload
       // set to middle tab when switching pages
       this.tab_location = 1
+    },
+    unauthorized_access: function () {
+      this.tabs = false
     }
   },
 };

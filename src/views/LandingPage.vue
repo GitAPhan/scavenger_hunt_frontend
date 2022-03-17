@@ -67,8 +67,7 @@ export default {
             this.current_page = 3
             this.game_request = payload
         },
-        game_response: function (payload) {
-            console.log(payload)
+        game_response: function () {
             // navigate to game area
             this.$router.push({
                 name: 'PlayerPage'
