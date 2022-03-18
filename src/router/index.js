@@ -25,9 +25,6 @@ const routes = [
     name: 'GameMasterPage',
     component: GameMasterPage
   },
-  // add /trade
-  // add /aboutus
-  // add /profile
   {
     path: '/checkpoint',
     name: 'CheckpointPage',

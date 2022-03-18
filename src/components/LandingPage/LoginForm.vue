@@ -51,7 +51,7 @@
                     color="primary"
                     v-if="invalid"
                     :disabled="true"
-                >login</v-btn>
+                >enter info</v-btn>
                 <v-btn
                     outlined
                     min-width="150px"
@@ -151,7 +151,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+
+
 h1 {
     margin-right: 200px;
 }

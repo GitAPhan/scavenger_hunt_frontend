@@ -10,9 +10,9 @@ export default {
     methods: {
         emit_tab_info() {
             let tabs = [
-                { title: 'store1', id: 1, text: 'lorem' },
-                { title: 'store2', id: 2, text: 'lorem2' },
-                { title: 'store3', id: 3, text: 'lorem3' },
+                { title: 'trade', id: 1, text: 'lorem' },
+                { title: 'shop', id: 2, text: 'lorem2' },
+                { title: 'log', id: 3, text: 'lorem3' },
             ]
             this.$emit('tab_info', tabs)
         },

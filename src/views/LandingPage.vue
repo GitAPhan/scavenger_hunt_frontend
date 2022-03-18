@@ -77,7 +77,7 @@ export default {
     mounted() {
         // if temp token is present *user has signed in/up
         if (this.$cookies.get('token') != undefined) {
-            if (this.$cookies.get('token').tempToken != undefined) {
+            if (this.$cookies.get('token').loginToken != undefined) {
                 this.current_page = 3
             }
         }
@@ -85,24 +85,17 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .title_block {
     display: grid;
     place-items: center;
     height: 30vh;
     width: 100vw;
-    row-gap: 0px;
     font-size: 30px;
-    border: black 0.5px solid;
-
-    > h1:nth-child(1) {
-        align-self: end;
-    }
-
-    > h1:nth-child(2) {
-        align-self: start;
-    }
+    text-align: center;
+    padding: 10vw;
 }
+
 
 .button_selection {
     display: grid;

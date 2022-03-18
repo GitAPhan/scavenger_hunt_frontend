@@ -30,8 +30,8 @@
       color="primary"
       dark
       src="http://unsplash.it/300?random&gravity=center"
-      prominent
-      v-if="tabs != false"
+      short
+      v-if="tabs != 0"
     >
       <template v-slot:img="{ props }">
         <v-img v-bind="props" gradient="to top right, rgba(19,84,122,.5), rgba(128,208,199,.8)"></v-img>
@@ -63,7 +63,7 @@
       </template>
     </v-app-bar>
 
-    <v-tabs-items v-model="tab_location">
+    <v-tabs-items id="v-main" v-model="tab_location">
       <v-tab-item v-for="tab in tabs" :key="tab.id">
         <v-card flat>
           <v-card-text v-text="tab.title"></v-card-text>
@@ -73,7 +73,7 @@
 
     <v-main>
       <transition name="transition_page_flip" mode="out-in">
-        <router-view @unauthorized_access="unauthorized_access" @tab_info="get_tab_info" />
+        <router-view :tab="tab_location" @unauthorized_access="unauthorized_access" @tab_info="get_tab_info" />
       </transition>
     </v-main>
   </v-app>
@@ -90,13 +90,13 @@ export default {
       items: [
         { title: 'Dashboard', icon: 'mdi-shield-home-outline', to: '/player' },
         { title: 'Store', icon: 'mdi-shopping-outline', to: '/store' },
-        { title: 'Trade', icon: 'mdi-swap-horizontal', to: '/trade' },
+        { title: 'Trade', icon: 'mdi-swap-horizontal', to: '/store' },
         { title: 'Checkpoint', icon: 'mdi-map-marker-check-outline', to: '/checkpoint' },
         { title: 'GM Panel', icon: 'mdi-shield-crown-outline', to: '/gamemaster' },
-        { title: 'About Us', icon: 'mdi-information-outline', to: '/aboutus' }
+        { title: 'About Us', icon: 'mdi-information-outline', to: '/' }
 
       ],
-      tab_location: null,
+      tab_location: 1,
       tabs: false,
       right: null,
       drawer: null,
@@ -116,9 +116,9 @@ export default {
 </script>
 <style>
 * {
-  /* color: white; */
+  color: rgb(186, 159, 231);
 }
-/* // transition settings // */
+// transition settings //
 .transition_page_flip-enter-active,
 .transition_page_flip-leave-active {
   transition: all 0.45s ease-in-out;
@@ -143,6 +143,6 @@ export default {
 #app {
   overflow: hidden;
   max-height: 100vh;
-  /* background-color: black; */
+  background-color: rgb(156, 236, 255);
 }
 </style>

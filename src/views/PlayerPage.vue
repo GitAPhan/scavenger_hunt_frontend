@@ -10,9 +10,9 @@ export default {
     methods: {
         emit_tab_info() {
             let tabs = [
-                { title: 'check-in log', id: 1, text: 'player1' },
-                { title: 'hints', id: 2, text: 'player2' },
-                { title: 'scoreboard', id: 3, text: 'player3' },
+                { title: 'profile', id: 1, text: 'player1' },
+                { title: 'scoreboard', id: 2, text: 'player2' },
+                { title: 'hints', id: 3, text: 'player3' },
             ]
             this.$emit('tab_info', tabs)
         },
@@ -32,5 +32,5 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style>
 </style>

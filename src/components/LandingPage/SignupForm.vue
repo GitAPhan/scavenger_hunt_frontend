@@ -70,7 +70,8 @@
                     color="red"
                     dismissible
                     elevation="5"
-                    icon="$mdiAccount"
+                    icon="mdi-alert-outline"
+                    class="alert"
                     type="error"
                 >{{ error_message }}</v-alert>
                 <v-btn
@@ -82,7 +83,7 @@
                     color="primary"
                     v-if="invalid"
                     :disabled="true"
-                >signup</v-btn>
+                >enter info</v-btn>
                 <v-btn
                     outlined
                     min-width="150px"
@@ -198,7 +199,7 @@ export default {
                 data: request_data
             }).then((res) => {
                 this.clear()
-                // set cookie with temp token
+                // set cookie with token
                 this.$cookies.set('token', res.data)
                 this.$emit('post_response', res.data)
             }).catch((err) => {
@@ -212,12 +213,17 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style>
+.alert {
+    position: absolute;
+    top: 50px;
+}
 .login_scroll {
-    height: 44vh;
-    min-width: 80vw;
+    height: 40vh;
+    min-width: 70vw;
     overflow-y: scroll;
     overflow-x: hidden;
+    margin-bottom: 20px;
 }
 
 .place_center {

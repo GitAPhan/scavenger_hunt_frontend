@@ -2,12 +2,13 @@
     <div>
         <h3>Welcome {{ this.$cookies.get('token').username }}</h3>
         <v-alert
+            class="alert_box"
             v-if="is_error"
             border="left"
             color="red"
             dismissible
             elevation="5"
-            icon="$mdiAccount"
+            icon="mdi-alert-outline"
             type="error"
         >{{ error_message }}</v-alert>
         <transition name="transition_form_flip" mode="out-in">
@@ -32,7 +33,7 @@
                             v-model="room_code"
                             :counter="6"
                             :error-messages="errors"
-                            label="room code"
+                            label="code"
                             name="room_code"
                             placeholder="enter room code"
                             required
@@ -50,9 +51,9 @@
                             v-model="game_name"
                             :counter="50"
                             :error-messages="errors"
-                            label="game name"
+                            label="name"
                             name="game_name"
-                            placeholder="game display name"
+                            placeholder="display name"
                             required
                             full-width
                         ></v-text-field>
@@ -62,16 +63,16 @@
                             v-if="invalid"
                             outlined
                             min-width="150px"
-                            elevation="2"
+                            elevation="1"
                             large
                             type="submit"
                             :disabled="true"
-                        >join game</v-btn>
+                        >enter code</v-btn>
                         <v-btn
                             v-else
                             outlined
                             min-width="150px"
-                            elevation="2"
+                            elevation="3"
                             large
                             color="primary"
                             type="submit"
@@ -85,16 +86,16 @@
                             v-if="invalid"
                             outlined
                             min-width="150px"
-                            elevation="2"
+                            elevation="1"
                             large
                             type="submit"
                             :disabled="true"
-                        >create game</v-btn>
+                        >enter name</v-btn>
                         <v-btn
                             v-else
                             outlined
                             min-width="150px"
-                            elevation="2"
+                            elevation="3"
                             large
                             color="primary"
                             type="submit"
@@ -117,7 +118,7 @@
                     type="submit"
                     v-if="is_join_game"
                     @click="switch_option"
-                >create game</v-btn>
+                >create game?</v-btn>
                 <v-btn
                     outlined
                     min-width="150px"
@@ -129,7 +130,7 @@
                     type="submit"
                     v-else
                     @click="switch_option"
-                >join game</v-btn>
+                >join game?</v-btn>
             </validation-observer>
         </transition>
     </div>
@@ -237,7 +238,7 @@ export default {
             } else {
                 token = this.request_data
             }
-            var request_key = ["tempToken", "loginId", "userId"]
+            var request_key = ["loginToken", "loginId", "userId"]
             for (var i = 0; i < request_key.length; i++) {
                 request_data[request_key[i]] = token[request_key[i]]
             }
@@ -253,9 +254,6 @@ export default {
             })
         },
         join_game: function () {
-            // setTimeout(() => { this.loading = !this.loading }, 2000)
-            // console.log(this.room_code)
-            // this.clear()
 
             // loader on
             this.loading = !this.loading
@@ -269,7 +267,7 @@ export default {
             } else {
                 token = this.request_data
             }
-            var request_key = ["tempToken", "loginId", "userId"]
+            var request_key = ["loginToken", "loginId", "userId"]
             for (var i = 0; i < request_key.length; i++) {
                 request_data[request_key[i]] = token[request_key[i]]
             }
@@ -291,7 +289,10 @@ export default {
 
 </script>
 
-<style lang="scss" scoped>
+<style>
+.alert_box {
+    position: absolute;
+}
 .center_grid {
     display: grid;
     place-items: center;
