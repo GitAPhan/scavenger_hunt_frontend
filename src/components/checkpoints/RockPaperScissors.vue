@@ -11,9 +11,9 @@
                 <!-- computer choice -->
             </transition>
             <transition name="swap" mode="out-in">
-                <img v-if="comp === 1" src="rock_right.png" alt="rock" />
-                <img v-else-if="comp === 2" src="paper_right.png" alt="paper" />
-                <img v-else-if="comp === 3" src="scissors_right.png" alt="scissors" />
+                <img v-if="comp === 'ROCK'" src="rock_right.png" alt="rock" />
+                <img v-else-if="comp === 'PAPER'" src="paper_right.png" alt="paper" />
+                <img v-else-if="comp === 'SCISSORS'" src="scissors_right.png" alt="scissors" />
             </transition>
         </article>
         <!-- your choice -->
@@ -25,14 +25,43 @@
 
                 <v-btn :disabled="loading" min-width="90px" value="SCISSORS">SCISSORS</v-btn>
             </v-btn-toggle>
-            <v-btn elevation="2" @click="loader" :loading="loading" :disabled="loading" outlined large text tile>submit choice</v-btn>
+            <v-btn
+                v-if="choice === undefined"
+                elevation="2"
+                :disabled="true"
+                outlined
+                large
+                text
+                tile
+            >make a choice</v-btn>
+            <v-btn
+                v-else
+                elevation="2"
+                @click="submit_choice"
+                :loading="loading"
+                :disabled="loading"
+                outlined
+                large
+                text
+                tile
+            >submit choice</v-btn>
         </article>
         <!-- scoreboard/round info -->
         <article class="game_scoreboard">
             <h3>score:</h3>
-            <h2>200</h2>
-            <h3>round:</h3>
-            <h2>1/3</h2>
+            <h2>rounds:</h2>
+            <h3>tokens:</h3>
+            <h3>{{ session.pointsWon }}</h3>
+            <h2>{{ session.roundsPlayed }}/{{ session.rounds }}</h2>
+            <h3>{{ session.tokensWon }}</h3>
+        </article>
+        <!-- challenge info -->
+        <article class="game_info">
+            <p>
+                GAME: rock paper scissors
+                <br />
+                PRIZE: {{ session.tokenReward }} tokens & {{ session.pointReward }} points/round
+            </p>
         </article>
     </div>
 </template>
@@ -51,7 +80,7 @@ export default {
     methods: {
         loader() {
             this.loading = !this.loading
-
+            // animation to show computer choosing
         },
         clear() {
             this.choice = undefined,
@@ -64,13 +93,14 @@ export default {
             this.loader()
             let response = undefined
             // prepare request data
-            let token = this.$cookies.get('token')
             let request_data = {
-                "playerToken": token.playerToken,
-                "gameToken": token.gameToken,
-                "gameType": 0, //rock paper scissors is type 0
+                "checkToken": this.session.checkToken,
+                "playerToken": this.session.playerToken,
+                "gameToken": this.session.gameToken,
+                "gameType": this.session.gameType,
                 "playerChoice": this.choice
             }
+            console.log(request_data)
             // request
             this.$axios.request({
                 url: "http://localhost:5000/api/check-in",
@@ -78,20 +108,50 @@ export default {
                 data: request_data
             }).then((res) => {
                 response = res.data
+                this.$cookies.set('session', response)
+                this.$store.commit('update_session', response)
+                this.comp = response.lastRound.computer
+                console.log(response)
             }).catch((err) => {
                 response = err.response.data
             })
-            console.log(response)
+            setTimeout(() => { this.clear() }, 2000)
+        }
+    },
+    mounted () {
+        if (this.token === undefined) {
+            this.$store.dispatch('update_token_cookie')
+        }
+        if (this.session === undefined) {
+            this.$store.dispatch('update_session_cookie')
+        }
+        console.log('mounted')
+        console.log(this.session)
+        console.log(this.token)
+    },
+    computed: {
+        token() {
+            return this.$store.state['token']
+        },
+        session() {
+            return this.$store.state['session']
         }
     },
 }
 </script>
 
 <style>
-.game_scoreboard {
+.game_info {
     display: grid;
     place-items: center;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    text-align: center;
+}
+.game_scoreboard {
+    margin: 50px 0px;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 .make_float {
     position: absolute;

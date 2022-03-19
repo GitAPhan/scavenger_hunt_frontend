@@ -23,23 +23,14 @@
                     top
                     color="secondary"
                     @click="current_page = 1"
-                > LOGIN</v-btn>
+                >LOGIN</v-btn>
             </article>
-            <login-form
-                @post_response="login_response"
-                v-else-if="current_page === 1"
-                class="content_block"
-            />
+            <login-form v-else-if="current_page === 1" class="content_block" />
             <signup-form
-                @post_response="login_response"
                 v-else-if="current_page === 2"
                 class="content_block"
             />
-            <game-form 
-                :request_data="game_request" 
-                @game_response="game_response"
-                v-else class="content_block" 
-            />
+            <game-form v-else class="content_block" />
         </transition>
     </div>
 </template>
@@ -59,28 +50,39 @@ export default {
     data() {
         return {
             current_page: 0,
-            game_request: {},
         }
     },
     methods: {
-        login_response: function (payload) {
+        login_response: function () {
             this.current_page = 3
-            this.game_request = payload
         },
         game_response: function () {
             // navigate to game area
             this.$router.push({
                 name: 'PlayerPage'
             })
+        },
+        request_alert: function () {
+            // an alert regarding a request has been broadcasted
+            console.log(this.tabs)
         }
     },
     mounted() {
-        // if temp token is present *user has signed in/up
+        // if token is present *user has signed in/up
         if (this.$cookies.get('token') != undefined) {
-            if (this.$cookies.get('token').loginToken != undefined) {
+            if (this.$cookies.get('token').playerToken != undefined || this.$cookies.get('token').masterToken != undefined) {
+                this.game_response()
+            } else if (this.$cookies.get('token').loginToken) {
                 this.current_page = 3
             }
         }
+        // listening for global emit events
+        // loginResponse
+        this.$root.$on('loginResponse', this.login_response);
+        // gameResponse
+        this.$root.$on('gameResponse', this.game_response)
+        // request alerts
+        this.$root.$on('requestAlert', this.request_alert)
     },
 }
 </script>
@@ -95,7 +97,6 @@ export default {
     text-align: center;
     padding: 10vw;
 }
-
 
 .button_selection {
     display: grid;
@@ -121,22 +122,22 @@ export default {
 /* // transition settings // */
 .transition_article_flip-enter-active,
 .transition_article_flip-leave-active {
-  transition: all 0.45s ease-in-out;
+    transition: all 0.45s ease-in-out;
 }
 
 .transition_article_flip-leave-to {
-  opacity: 0;
-  transform: translateX(-20vw);
+    opacity: 0;
+    transform: translateX(-20vw);
 }
 
 .transition_article_flip-enter {
-  opacity: 0;
-  transform: translateX(20vw);
+    opacity: 0;
+    transform: translateX(20vw);
 }
 
 .transition_article_flip-enter-to,
 .transition_article_flip-leave {
-  opacity: 1;
-  transform: translateX(0);
+    opacity: 1;
+    transform: translateX(0);
 }
 </style>

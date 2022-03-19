@@ -66,7 +66,7 @@
     <v-tabs-items id="v-main" v-model="tab_location">
       <v-tab-item v-for="tab in tabs" :key="tab.id">
         <v-card flat>
-          <v-card-text v-text="tab.title"></v-card-text>
+          <v-card-text v-text="tab.text"></v-card-text>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -87,6 +87,7 @@ export default {
 
   data() {
     return {
+      token: this.$cookies.get('token'),
       items: [
         { title: 'Dashboard', icon: 'mdi-shield-home-outline', to: '/player' },
         { title: 'Store', icon: 'mdi-shopping-outline', to: '/store' },
@@ -103,22 +104,46 @@ export default {
     }
   },
   methods: {
-    get_tab_info(payload) {
+    get_tab_info: function (payload) {
       this.tabs = payload
       // set to middle tab when switching pages
       this.tab_location = 1
     },
     unauthorized_access: function () {
       this.tabs = false
+    },
+    react_to_cookie_update: function () {
+      // new cookie has been set
+      this.$store.commit('update_token')
+      this.$store.commit('update_session')
+    },
+    request_alert: function() {
+      // an alert regarding a request has been broadcasted
+      console.log(this.tabs)
     }
+  },
+  mounted () {
+    // check cookie and compare to state
+    if (this.$cookies.get('token') != undefined) {
+      if (this.$store.state['token'] != this.$cookies.get('token')) {
+        this.$store.commit('update_token')
+      }
+    }
+    if (this.$cookies.get('session') != undefined) {
+      if (this.$store.state['session'] != this.$cookies.get('session')) {
+        this.$store.commit('update_session')
+      }
+    }
+    this.$root.$on('tokenSet', this.react_to_cookie_update);
+    this.$root.$on('requestAlert', this.request_alert)
   },
 };
 </script>
 <style>
 * {
-  color: rgb(186, 159, 231);
+  color: #3d1a6b;
 }
-// transition settings //
+/* // transition settings // */
 .transition_page_flip-enter-active,
 .transition_page_flip-leave-active {
   transition: all 0.45s ease-in-out;

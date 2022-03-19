@@ -134,7 +134,8 @@ export default {
                 this.clear()
                 // set cookie with temp token
                 this.$cookies.set('token', res.data)
-                this.$emit('post_response', res.data)
+                this.$root.$emit('tokenSet')
+                this.$root.$emit('loginResponse')
             }).catch((err) => {
                 this.clear()
                 this.is_error = !this.is_error

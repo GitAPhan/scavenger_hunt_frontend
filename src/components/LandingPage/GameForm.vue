@@ -20,7 +20,7 @@
                 <div v-else>
                     <h2>CREATE GAME</h2>
                     <p>What would you like the name of the game to be?</p>
-                </div>      
+                </div>
                 <v-form class="center_grid" @submit.prevent="submit">
                     <validation-provider
                         v-if="is_join_game"
@@ -177,14 +177,9 @@ export default {
         ValidationProvider,
         ValidationObserver,
     },
-    props: {
-        request_data: {
-            type: Object,
-            required: true,
-        },
-    },
     data() {
         return {
+            token: this.$store.state['token'],
             loading: false,
             room_code: '',
             game_name: '',
@@ -211,9 +206,10 @@ export default {
         },
         request_success: function (payload) {
             this.clear()
-            this.$emit("game_response", payload)
+            this.$root.$emit("gameResponse", payload)
             // update cookie
             this.$cookies.set('token', payload)
+            this.$root.$emit('tokenSet')
         },
         request_error: function (payload) {
             this.clear()
@@ -231,16 +227,9 @@ export default {
             var request_data = {
                 "gameName": this.game_name,
             }
-            var token = undefined
-            // create request data
-            if (JSON.stringify(this.request_data) === "{}") {
-                token = this.$cookies.get('token')
-            } else {
-                token = this.request_data
-            }
             var request_key = ["loginToken", "loginId", "userId"]
             for (var i = 0; i < request_key.length; i++) {
-                request_data[request_key[i]] = token[request_key[i]]
+                request_data[request_key[i]] = this.token[request_key[i]]
             }
             // request
             this.$axios.request({
@@ -260,16 +249,9 @@ export default {
             var request_data = {
                 "gameToken": this.room_code,
             }
-            var token = undefined
-            // create request data
-            if (JSON.stringify(this.request_data) === "{}") {
-                token = this.$cookies.get('token')
-            } else {
-                token = this.request_data
-            }
             var request_key = ["loginToken", "loginId", "userId"]
             for (var i = 0; i < request_key.length; i++) {
-                request_data[request_key[i]] = token[request_key[i]]
+                request_data[request_key[i]] = this.token[request_key[i]]
             }
             // request
             this.$axios.request({
