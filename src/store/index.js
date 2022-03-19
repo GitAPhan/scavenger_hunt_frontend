@@ -27,7 +27,7 @@ export default new Vuex.Store({
   },
   actions: {
     update_token_cookie(store) {
-      store.commit('update_token',cookies.get('token'))
+      store.commit('update_token', cookies.get('token'))
       console.log('------------- token store -------------')
       console.log(cookies.get('token'))
       console.log('------------- token store -------------')      

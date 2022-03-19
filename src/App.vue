@@ -120,6 +120,9 @@ export default {
     request_alert: function() {
       // an alert regarding a request has been broadcasted
       console.log(this.tabs)
+    },
+    change_tab: function(num) {
+      this.tab_location = num
     }
   },
   mounted () {
@@ -136,6 +139,7 @@ export default {
     }
     this.$root.$on('tokenSet', this.react_to_cookie_update);
     this.$root.$on('requestAlert', this.request_alert)
+    this.$root.$on('changeTab', this.change_tab)
   },
 };
 </script>

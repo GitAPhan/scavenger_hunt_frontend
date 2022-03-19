@@ -1,6 +1,6 @@
 <template>
     <div class="game_container">
-        <h2 class="make_float">{{ game_message }}</h2>
+        <h2 class="make_float">{{ game_message }}{{this.session.gameName}}</h2>
         <!-- animated view -->
         <article class="game_window">
             <!-- player choice -->
@@ -73,7 +73,7 @@ export default {
         return {
             choice: undefined,
             comp: undefined,
-            game_message: 'make your choice!',
+            game_message: "You've reached ",
             loading: false,
         }
     },
@@ -85,7 +85,6 @@ export default {
         clear() {
             this.choice = undefined,
             this.comp = undefined,
-            this.game_message = 'make your choice'
             this.loading = !this.loading
         },
         submit_choice() {
@@ -94,13 +93,12 @@ export default {
             let response = undefined
             // prepare request data
             let request_data = {
-                "checkToken": this.session.checkToken,
-                "playerToken": this.session.playerToken,
-                "gameToken": this.session.gameToken,
+                "checkToken": this.game.checkToken,
+                "playerToken": this.game.playerToken,
+                "gameToken": this.game.gameToken,
                 "gameType": this.session.gameType,
                 "playerChoice": this.choice
             }
-            console.log(request_data)
             // request
             this.$axios.request({
                 url: "http://localhost:5000/api/check-in",
@@ -108,10 +106,19 @@ export default {
                 data: request_data
             }).then((res) => {
                 response = res.data
-                this.$cookies.set('session', response)
                 this.$store.commit('update_session', response)
                 this.comp = response.lastRound.computer
-                console.log(response)
+                // win check
+                if (response.isActive === 0) {
+                    delete response.lastRound
+                    // win code
+                    setTimeout(() => {
+                        this.$root.$emit("gameComplete", response)
+                        this.$store.commit('update_session', undefined)
+                        this.$store.commit('update_game', undefined)
+                    },3000)
+                    
+                }
             }).catch((err) => {
                 response = err.response.data
             })
@@ -122,12 +129,6 @@ export default {
         if (this.token === undefined) {
             this.$store.dispatch('update_token_cookie')
         }
-        if (this.session === undefined) {
-            this.$store.dispatch('update_session_cookie')
-        }
-        console.log('mounted')
-        console.log(this.session)
-        console.log(this.token)
     },
     computed: {
         token() {
@@ -135,6 +136,9 @@ export default {
         },
         session() {
             return this.$store.state['session']
+        },
+        game() {
+            return this.$store.state['game']
         }
     },
 }

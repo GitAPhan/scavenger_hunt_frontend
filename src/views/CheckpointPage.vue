@@ -9,9 +9,9 @@
         <article v-else-if="tab === 2">
             <h1>{{ tabs[2]['title'] }}</h1>
         </article>
-        <article v-else>
+        <article class="nothing_message" v-else>
             <h1>{{ tabs[1]['title'] }}</h1>
-            <h4>is not available</h4>
+            <h4>there are currently none available</h4>
             <p>{{ error_message }}</p>
         </article>
     </div>
@@ -42,6 +42,12 @@ export default {
             // an alert regarding a request has been broadcasted
             console.log(this.tabs)
         },
+        game_complete: function(game_result) {
+            this.$root.$emit('changeTab', 2)
+            this.is_challenge_active = false
+            // store the result somewhere for the log tab
+            console.log(game_result)
+        },
         check_token_request: function () {
 
             if (this.checkToken != undefined && this.session === undefined) {
@@ -65,12 +71,15 @@ export default {
                     // enable game
                     this.challenge_type = response['gameType']
                     this.$store.commit('update_session', response)
-                    this.is_challenge_active = true
+                    // check to see if game is active
+                    if (response.isActive === 1) {
+                        this.is_challenge_active = true
+                    }
+                    
                 }).catch((err) => {
                     response = err.response.data
                     this.error_message = response
                 })
-
             } 
         },
     },
@@ -99,6 +108,8 @@ export default {
         // listening for global emit events
         // request alerts
         this.$root.$on('requestAlert', this.request_alert)
+        // listen for games completing
+        this.$root.$on("gameComplete", this.game_complete)
     },
     props: {
         tab: {
@@ -124,6 +135,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.nothing_message {
+    text-align: center;
+}
 .checkpoint_container {
     display: grid;
     place-items: center;
