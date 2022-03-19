@@ -7,7 +7,7 @@
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title>## PlayerName ##</v-list-item-title>
+          <v-list-item-title>{{this.$store.state['token'].username}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -39,20 +39,14 @@
 
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
 
-      <v-app-bar-title>Scavenger Hunt</v-app-bar-title>
+      <v-app-bar-title>{{header_title}}</v-app-bar-title>
 
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
 
       <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
-      </v-btn>
-
-      <v-btn icon>
-        <v-icon>mdi-dots-vertical</v-icon>
+        <v-icon v-if="tab_location%2===0">mdi-logout-variant</v-icon>
+        <v-icon v-else>mdi-skull-scan-outline</v-icon>
       </v-btn>
       <template v-slot:extension>
         <v-tabs v-model="tab_location" fixed-tabs>
@@ -87,20 +81,18 @@ export default {
 
   data() {
     return {
-      token: this.$cookies.get('token'),
       items: [
         { title: 'Dashboard', icon: 'mdi-shield-home-outline', to: '/player' },
         { title: 'Store', icon: 'mdi-shopping-outline', to: '/store' },
-        { title: 'Trade', icon: 'mdi-swap-horizontal', to: '/store' },
         { title: 'Checkpoint', icon: 'mdi-map-marker-check-outline', to: '/checkpoint' },
         { title: 'GM Panel', icon: 'mdi-shield-crown-outline', to: '/gamemaster' },
-        { title: 'About Us', icon: 'mdi-information-outline', to: '/' }
 
       ],
       tab_location: 1,
       tabs: false,
       right: null,
       drawer: null,
+      header_title: undefined //title to change per page
     }
   },
   methods: {
@@ -114,8 +106,7 @@ export default {
     },
     react_to_cookie_update: function () {
       // new cookie has been set
-      this.$store.commit('update_token')
-      this.$store.commit('update_session')
+      this.$store.commit('update_token_cookie')
     },
     request_alert: function() {
       // an alert regarding a request has been broadcasted
@@ -129,12 +120,7 @@ export default {
     // check cookie and compare to state
     if (this.$cookies.get('token') != undefined) {
       if (this.$store.state['token'] != this.$cookies.get('token')) {
-        this.$store.commit('update_token')
-      }
-    }
-    if (this.$cookies.get('session') != undefined) {
-      if (this.$store.state['session'] != this.$cookies.get('session')) {
-        this.$store.commit('update_session')
+        this.$store.dispatch('update_token_cookie')
       }
     }
     this.$root.$on('tokenSet', this.react_to_cookie_update);

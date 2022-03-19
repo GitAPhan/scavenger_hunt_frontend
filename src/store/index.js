@@ -13,6 +13,7 @@ export default new Vuex.Store({
     token: cookies.get('token'),
     session: undefined,
     game: undefined,
+    check_log: [],
   },
   mutations: {
     update_token(state, payload) {
@@ -23,6 +24,9 @@ export default new Vuex.Store({
     },
     update_game(state, payload) {
       state.game = payload
+    },
+    update_check_log(state, payload) {
+      state.check_log = payload
     }
   },
   actions: {
@@ -30,7 +34,7 @@ export default new Vuex.Store({
       store.commit('update_token', cookies.get('token'))
       console.log('------------- token store -------------')
       console.log(cookies.get('token'))
-      console.log('------------- token store -------------')      
+      console.log('------------- token store -------------')
     },
     update_session_cookie(store) {
       store.commit('update_session', cookies.get('session'))

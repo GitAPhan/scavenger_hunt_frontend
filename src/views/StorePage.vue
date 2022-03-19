@@ -10,9 +10,9 @@ export default {
     data() {
         return {
             tabs: [
-                { title: 'profile', id: 1, text: 'player1' },
-                { title: 'scoreboard', id: 2, text: 'player2' },
-                { title: 'hints', id: 3, text: 'player3' },
+                { title: 'trade', id: 1, text: 'player1' },
+                { title: 'shop', id: 2, text: 'player2' },
+                { title: 'log', id: 3, text: 'player3' },
             ],
             token: this.$cookies.get('token')
         }

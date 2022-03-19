@@ -6,8 +6,13 @@
         <article v-else-if="tab === 0">
             <h1>{{ tabs[0]['title'] }}</h1>
         </article>
-        <article v-else-if="tab === 2">
-            <h1>{{ tabs[2]['title'] }}</h1>
+        <article
+            class="check_log"
+            v-else-if="tab === 2">
+            <log-card
+            v-for="card in check_log"
+            :key="card.checkpointId" 
+            :card="card" />
         </article>
         <article class="nothing_message" v-else>
             <h1>{{ tabs[1]['title'] }}</h1>
@@ -19,12 +24,14 @@
 
 <script>
 import RockPaperScissors from "@/components/checkpoints/RockPaperScissors.vue"
+import LogCard from "@/components/checkpoints/LogCard.vue"
+
 export default {
     name: 'CheckpointPage',
     data() {
         return {
             tabs: [
-                { title: '#####', id: 1, text: 'lorem' },
+                { title: 'checkpoint', id: 1, text: 'lorem' },
                 { title: 'challenge', id: 2, text: 'lorem2' },
                 { title: 'log', id: 3, text: 'lorem3' },
             ],
@@ -32,6 +39,7 @@ export default {
             is_challenge_active: false,
             challenge_type: undefined,
             error_message: undefined,
+            userId: this.$cookies.get('token').userId
         }
     },
     methods: {
@@ -46,11 +54,15 @@ export default {
             this.$root.$emit('changeTab', 2)
             this.is_challenge_active = false
             // store the result somewhere for the log tab
-            console.log(game_result)
+            let new_log = game_result
+            new_log.push(this.check_log)
+            this.$store.commit('update_check_log', new_log)
         },
         check_token_request: function () {
 
             if (this.checkToken != undefined && this.session === undefined) {
+                // switch to challenge tab if query is present
+                this.$root.$emit('changeTab', 1)
                 let game = {
                     "playerToken": this.token.playerToken,
                     "gameToken": this.token.gameToken,
@@ -77,11 +89,27 @@ export default {
                     }
                     
                 }).catch((err) => {
-                    response = err.response.data
-                    this.error_message = response
+                    this.error_message = err.response.data
+                setTimeout(() => {this.error_message = undefined},3000) 
                 })
             } 
         },
+        update_check_log: function () {
+            // request
+            this.$axios.request({
+                url: "http://localhost:5000/api/check-in/log",
+                params: {
+                    "userId": this.token.userId
+                }
+            }).then((res) => {
+                // update check_log state
+                this.$store.commit('update_check_log', res.data)
+            }).catch((err) => {
+                // display error message
+                this.error_message = err.response.data
+                setTimeout(() => {this.error_message = undefined},3000)                
+            })
+        }
     },
     mounted() {
         if (this.token === undefined) {
@@ -91,6 +119,10 @@ export default {
         this.check_token_request()
         // send tab info
         this.emit_tab_info()
+        // update check log if state is empty
+        if (JSON.stringify(this.check_log) === '[]') {
+            this.update_check_log()
+            }
         // cookie check
         if (this.$cookies.get('token') != undefined) {
             if (this.$cookies.get('token').playerToken === undefined) {
@@ -119,6 +151,7 @@ export default {
     },
     components: {
         RockPaperScissors,
+        LogCard,
     },
     computed: {
         token() {
@@ -130,11 +163,22 @@ export default {
         game() {
             return this.$store.state['game']
         },
+        check_log() {
+            return this.$store.state['check_log']
+        }
     },
 }
 </script>
 
 <style lang="scss" scoped>
+.check_log {
+    display: grid;
+    justify-items: center;
+    align-items: start;
+    grid-auto-rows: auto;
+    width: 100%;
+    align-self: start;
+}
 .nothing_message {
     text-align: center;
 }
@@ -144,3 +188,4 @@ export default {
     height: 100%;
 }
 </style>
+
