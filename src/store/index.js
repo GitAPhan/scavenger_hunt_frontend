@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import cookies from 'vue-cookies'
-import axios from 'axios'
+// import axios from 'axios'
 
-axios
-cookies
 
 Vue.use(Vuex)
 
@@ -14,6 +12,7 @@ export default new Vuex.Store({
     session: undefined,
     game: undefined,
     check_log: [],
+    checkpoint: []
   },
   mutations: {
     update_token(state, payload) {
@@ -26,7 +25,10 @@ export default new Vuex.Store({
       state.game = payload
     },
     update_check_log(state, payload) {
-      state.check_log = payload
+      state.check_log = state.check_log.concat(payload)
+    },
+    update_checkpoint(state, payload) {
+      state.checkpoint = payload
     }
   },
   actions: {
@@ -36,17 +38,5 @@ export default new Vuex.Store({
       console.log(cookies.get('token'))
       console.log('------------- token store -------------')
     },
-    update_session_cookie(store) {
-      store.commit('update_session', cookies.get('session'))
-      console.log('------------- session store -------------')
-      console.log(cookies.get('session'))
-      console.log('------------- session store -------------')
-    },
-    update_game_cookie(store) {
-      store.commit('update_game', cookies.get('game'))
-      console.log('------------- game store -------------')
-      console.log(cookies.get('game'))
-      console.log('------------- game store -------------')
-    }
   },
 })

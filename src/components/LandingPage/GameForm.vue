@@ -179,7 +179,6 @@ export default {
     },
     data() {
         return {
-            token: this.$store.state['token'],
             loading: false,
             room_code: '',
             game_name: '',
@@ -209,7 +208,7 @@ export default {
             this.$root.$emit("gameResponse", payload)
             // update cookie
             this.$cookies.set('token', payload)
-            this.$root.$emit('tokenSet')
+            this.$store.commit('update_token', payload)
         },
         request_error: function (payload) {
             this.clear()
@@ -246,18 +245,24 @@ export default {
 
             // loader on
             this.loading = !this.loading
-            var request_data = {
-                "gameToken": this.room_code,
-            }
-            var request_key = ["loginToken", "loginId", "userId"]
-            for (var i = 0; i < request_key.length; i++) {
-                request_data[request_key[i]] = this.token[request_key[i]]
-            }
+            // var request_data = {
+            //     "gameToken": this.room_code,
+            // }
+            // var request_key = ["loginToken", "loginId", "userId"]
+            // for (var i = 0; i < request_key.length; i++) {
+            //     request_data[request_key[i]] = this.token[request_key[i]]
+            // }
+
             // request
             this.$axios.request({
                 url: "http://localhost:5000/api/login",
                 method: "PATCH",
-                data: request_data
+                data: {
+                    "loginToken": this.token['loginToken'],
+                    "loginId": this.token['loginId'],
+                    "userId": this.token['userId'],
+                    "gameToken": this.room_code
+                }
             }).then((res) => {
                 this.request_success(res.data)
             }).catch((err) => {
@@ -265,6 +270,11 @@ export default {
             })
         },
 
+    },
+    computed: {
+        token() {
+            return this.$store.state['token']
+        }
     },
 }
 

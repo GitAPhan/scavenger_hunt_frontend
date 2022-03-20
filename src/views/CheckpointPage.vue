@@ -1,19 +1,26 @@
 <template>
     <div class="checkpoint_container">
+        <!-- challenge tab -->
         <article v-if="tab === 1 && is_challenge_active">
             <rock-paper-scissors :game="game" v-if="challenge_type === 0" />
         </article>
-        <article v-else-if="tab === 0">
-            <h1>{{ tabs[0]['title'] }}</h1>
+        <!-- checkpoint tab -->
+        <article class="log_container" v-else-if="tab === 0">
+            <view-card
+                v-for="card in checkpoint"
+                :key="card.checkpointId"
+                :card="card"
+            />
         </article>
-        <article
-            class="check_log"
-            v-else-if="tab === 2">
+        <!-- log tab -->
+        <article class="log_container" v-else-if="tab === 2">
             <log-card
-            v-for="card in check_log"
-            :key="card.checkpointId" 
-            :card="card" />
+                v-for="card in check_log"
+                :key="card.checkpointId+365.4"
+                :card="card"
+            />
         </article>
+        <!-- the tab -->
         <article class="nothing_message" v-else>
             <h1>{{ tabs[1]['title'] }}</h1>
             <h4>there are currently none available</h4>
@@ -25,6 +32,7 @@
 <script>
 import RockPaperScissors from "@/components/checkpoints/RockPaperScissors.vue"
 import LogCard from "@/components/checkpoints/LogCard.vue"
+import ViewCard from "@/components/checkpoints/ViewCard.vue"
 
 export default {
     name: 'CheckpointPage',
@@ -50,13 +58,11 @@ export default {
             // an alert regarding a request has been broadcasted
             console.log(this.tabs)
         },
-        game_complete: function(game_result) {
+        game_complete: function (game_result) {
             this.$root.$emit('changeTab', 2)
             this.is_challenge_active = false
-            // store the result somewhere for the log tab
-            let new_log = game_result
-            new_log.push(this.check_log)
-            this.$store.commit('update_check_log', new_log)
+            // store the result somewhere for the log tab            
+            this.$store.commit('update_check_log', game_result)
         },
         check_token_request: function () {
 
@@ -87,12 +93,12 @@ export default {
                     if (response.isActive === 1) {
                         this.is_challenge_active = true
                     }
-                    
+
                 }).catch((err) => {
                     this.error_message = err.response.data
-                setTimeout(() => {this.error_message = undefined},3000) 
+                    setTimeout(() => { this.error_message = undefined }, 3000)
                 })
-            } 
+            }
         },
         update_check_log: function () {
             // request
@@ -107,39 +113,57 @@ export default {
             }).catch((err) => {
                 // display error message
                 this.error_message = err.response.data
-                setTimeout(() => {this.error_message = undefined},3000)                
+                setTimeout(() => { this.error_message = undefined }, 6000)
+            })
+        },
+        update_checkpoint: function () {
+            // request
+            this.$axios.request({
+                url: "http://localhost:5000/api/checkpoints",
+                params: {
+                    "gameToken": this.token.gameToken
+                }
+            }).then((res) => {
+                // update checkpoint state
+                this.$store.commit('update_checkpoint', res.data)
+            }).catch((err) => {
+                // display error message
+                this.error_message = err.response.data
+                setTimeout(() => { this.error_message = undefined }, 6000)
             })
         }
     },
     mounted() {
-        if (this.token === undefined) {
-            this.$store.dispatch('update_token_cookie')
-        }
-        // if check token was passed through route query
-        this.check_token_request()
-        // send tab info
-        this.emit_tab_info()
-        // update check log if state is empty
-        if (JSON.stringify(this.check_log) === '[]') {
-            this.update_check_log()
-            }
         // cookie check
         if (this.$cookies.get('token') != undefined) {
-            if (this.$cookies.get('token').playerToken === undefined) {
+            if (this.$cookies.get('token').loginToken != undefined) {
+                this.$emit("unauthorized_access")
                 this.$router.push({
                     name: 'LandingPage',
                 })
-                this.$emit("unauthorized_access")
             }
         } else {
+            this.$emit("unauthorized_access")
             this.$router.push({
                 name: 'LandingPage',
             })
-            this.$emit("unauthorized_access")
+        }
+        if (this.token === null) {
+            this.$store.dispatch('update_token_cookie')
+        }
+        // send tab info
+        this.emit_tab_info()
+        // if check token was passed through route query
+        this.check_token_request()
+        // update check log if state is empty
+        if (JSON.stringify(this.check_log) === '[]') {
+            this.update_check_log()
+        }
+        // update checkpoint if state is empty
+        if (JSON.stringify(this.checkpoint) === '[]') {
+            this.update_checkpoint()
         }
         // listening for global emit events
-        // request alerts
-        this.$root.$on('requestAlert', this.request_alert)
         // listen for games completing
         this.$root.$on("gameComplete", this.game_complete)
     },
@@ -152,6 +176,7 @@ export default {
     components: {
         RockPaperScissors,
         LogCard,
+        ViewCard,
     },
     computed: {
         token() {
@@ -165,13 +190,16 @@ export default {
         },
         check_log() {
             return this.$store.state['check_log']
+        },
+        checkpoint() {
+            return this.$store.state['checkpoint']
         }
     },
 }
 </script>
 
 <style lang="scss" scoped>
-.check_log {
+.log_container {
     display: grid;
     justify-items: center;
     align-items: start;

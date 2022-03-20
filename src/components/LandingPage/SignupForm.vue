@@ -201,7 +201,7 @@ export default {
                 this.clear()
                 // set cookie with token
                 this.$cookies.set('token', res.data)
-                this.$root.$emit('tokenSet')
+                this.$store.commit('update_token', res.data)
                 this.$root.$emit('loginResponse')
             }).catch((err) => {
                 this.clear()

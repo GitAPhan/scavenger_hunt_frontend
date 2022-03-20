@@ -31,8 +31,6 @@ export default {
         }
     },
     mounted() {
-        // send tab info
-        this.emit_tab_info()
         // cookie check
         if (this.token != undefined) {
             if (this.token.loginToken != undefined) {
@@ -47,6 +45,9 @@ export default {
             })
             this.$emit("unauthorized_access")
         }
+        // send tab info
+        this.emit_tab_info()
+        
         // listening for global emit events
         // tokenSet
         this.$root.$on('tokenSet', this.react_to_cookie_update);
