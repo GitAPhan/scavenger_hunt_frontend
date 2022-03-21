@@ -29,10 +29,10 @@ export default {
         }
     },
     mounted() {
-        if (JSON.stringify(this.scoreboard) === "[]") {
+        // if (JSON.stringify(this.scoreboard) === "[]") {
             // only run request if scoreboard state is empty
             this.get_scoreboard();
-        }        
+        // }        
     },
     computed: {
         token: {

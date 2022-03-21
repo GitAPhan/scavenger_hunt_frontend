@@ -115,7 +115,7 @@ export default {
         }
         // cookie check
         if (this.$cookies.get('token') != undefined) {
-            if (this.$cookies.get('loginToken') != undefined) {
+            if (this.$cookies.get('token').loginToken != undefined) {
                 this.$router.push({
                     name: 'LandingPage',
                 })

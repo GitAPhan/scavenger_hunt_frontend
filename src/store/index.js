@@ -21,6 +21,7 @@ export default new Vuex.Store({
     // used for player page
     scoreboard: [],
     user_profile: [],
+    user_score: [],
   },
   mutations: {
     update_token(state, payload) {
@@ -56,6 +57,9 @@ export default new Vuex.Store({
     },
     update_user_profile(state, payload) {
       state.user_profile = payload
+    },
+    update_user_score(state, payload) {
+      state.user_score = payload
     }
   },
   actions: {
