@@ -17,7 +17,10 @@ export default new Vuex.Store({
     tab_location: 1,
     tabs: false,
     check_token: undefined,
-    title: 'Scavenger Hunt'
+    title: 'Scavenger Hunt',
+    // used for player page
+    scoreboard: [],
+    user_profile: [],
   },
   mutations: {
     update_token(state, payload) {
@@ -47,6 +50,12 @@ export default new Vuex.Store({
     },
     update_title(state, payload) {
       state.title = payload
+    },
+    update_scoreboard(state, payload) {
+      state.scoreboard = payload
+    },
+    update_user_profile(state, payload) {
+      state.user_profile = payload
     }
   },
   actions: {

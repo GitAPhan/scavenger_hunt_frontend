@@ -31,8 +31,8 @@ export default {
     },
     mounted() {
         // cookie check
-        if (this.token != undefined) {
-            if (this.token.loginToken != undefined) {
+        if (this.$cookies.get('token') != undefined) {
+            if (this.$cookies.get('loginToken') != undefined) {
                 this.$router.push({
                     name: 'LandingPage',
                 })
