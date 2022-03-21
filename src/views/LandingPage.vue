@@ -62,10 +62,6 @@ export default {
                 name: 'PlayerPage'
             })
         },
-        request_alert: function () {
-            // an alert regarding a request has been broadcasted
-            console.log(this.tabs)
-        }
     },
     mounted() {
         // if token is present *user has signed in/up
@@ -81,8 +77,6 @@ export default {
         this.$root.$on('loginResponse', this.login_response);
         // gameResponse
         this.$root.$on('gameResponse', this.game_response)
-        // request alerts
-        this.$root.$on('requestAlert', this.request_alert)
     },
 }
 </script>

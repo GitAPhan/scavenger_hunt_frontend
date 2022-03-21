@@ -25,7 +25,7 @@ export default {
     place-items: center;
     width: 90%;
     max-width: 450px;
-    margin: 15px;
+    min-height: 60px;
     border: 1px black solid;
     background-color: rgba(0, 0, 0, 0.104);
     grid-template-areas:

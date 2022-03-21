@@ -9,17 +9,20 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     token: cookies.get('token'),
-    session: undefined,
     game: undefined,
     check_log: [],
-    checkpoint: []
+    checkpoint: [],
+    // used for the nav drawer
+    drawer: null,
+    tab_location: 1,
+    tabs: false,
+    check_token: undefined,
+    title: 'Scavenger Hunt'
   },
   mutations: {
     update_token(state, payload) {
+      cookies.set('token', payload)
       state.token = payload
-    },
-    update_session(state, payload) {
-      state.session = payload
     },
     update_game(state, payload) {
       state.game = payload
@@ -29,6 +32,21 @@ export default new Vuex.Store({
     },
     update_checkpoint(state, payload) {
       state.checkpoint = payload
+    },
+    update_drawer(state, payload) {
+      state.drawer = payload
+    },
+    update_tab_location(state, payload) {
+      state.tab_location = payload
+    },
+    update_tabs(state, payload) {
+      state.tabs = payload
+    },
+    update_check_token(state, payload) {
+      state.check_token = payload
+    },
+    update_title(state, payload) {
+      state.title = payload
     }
   },
   actions: {

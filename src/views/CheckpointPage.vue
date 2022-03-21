@@ -1,24 +1,16 @@
 <template>
     <div class="checkpoint_container">
         <!-- challenge tab -->
-        <article v-if="tab === 1 && is_challenge_active">
-            <rock-paper-scissors :game="game" v-if="challenge_type === 0" />
+        <article v-if="tab_location === 1 && is_challenge_active">
+            <rock-paper-scissors v-if="challenge_type === 0" />
         </article>
         <!-- checkpoint tab -->
-        <article class="log_container" v-else-if="tab === 0">
-            <view-card
-                v-for="card in checkpoint"
-                :key="card.checkpointId"
-                :card="card"
-            />
+        <article class="log_container" v-else-if="tab_location === 2">
+            <log-card v-for="card in check_log" :key="card.checkpointId" :card="card" />
         </article>
         <!-- log tab -->
-        <article class="log_container" v-else-if="tab === 2">
-            <log-card
-                v-for="card in check_log"
-                :key="card.checkpointId+365.4"
-                :card="card"
-            />
+        <article class="log_container" v-else-if="tab_location === 0">
+            <view-card v-for="card in checkpoint" :key="card.checkpointId + 365.4" :card="card" />
         </article>
         <!-- the tab -->
         <article class="nothing_message" v-else>
@@ -39,66 +31,47 @@ export default {
     data() {
         return {
             tabs: [
-                { title: 'checkpoint', id: 1, text: 'lorem' },
+                { title: 'check', id: 1, text: 'lorem' },
                 { title: 'challenge', id: 2, text: 'lorem2' },
-                { title: 'log', id: 3, text: 'lorem3' },
+                { title: 'point', id: 3, text: 'lorem3' },
             ],
-            checkToken: this.$route.query.checkToken,
             is_challenge_active: false,
             challenge_type: undefined,
             error_message: undefined,
-            userId: this.$cookies.get('token').userId
+            // nav bar title
+            nav_bar_title: 'checkpoint',
         }
     },
     methods: {
-        emit_tab_info: function () {
-            this.$emit('tab_info', this.tabs)
-        },
-        request_alert: function () {
-            // an alert regarding a request has been broadcasted
-            console.log(this.tabs)
-        },
         game_complete: function (game_result) {
-            this.$root.$emit('changeTab', 2)
+            this.tab_location = 2
             this.is_challenge_active = false
             // store the result somewhere for the log tab            
-            this.$store.commit('update_check_log', game_result)
+            this.check_log = game_result
         },
-        check_token_request: function () {
-
-            if (this.checkToken != undefined && this.session === undefined) {
-                // switch to challenge tab if query is present
-                this.$root.$emit('changeTab', 1)
-                let game = {
-                    "playerToken": this.token.playerToken,
-                    "gameToken": this.token.gameToken,
-                    "checkToken": this.checkToken,
-                    "userId": this.token.userId
+        get_checkpoint_info: function () {
+            // request
+            let response = undefined
+            this.$axios.request({
+                url: 'http://localhost:5000/api/check-in',
+                params: {
+                    "userId": this.token.userId,
+                    "checkToken": this.check_token
                 }
-                this.$store.commit('update_game', game)
-                // request
-                let response = undefined
-                this.$axios.request({
-                    url: 'http://localhost:5000/api/check-in',
-                    params: {
-                        "userId": this.token.userId,
-                        "checkToken": this.checkToken
-                    }
-                }).then((res) => {
-                    response = res.data
-                    // enable game
-                    this.challenge_type = response['gameType']
-                    this.$store.commit('update_session', response)
-                    // check to see if game is active
-                    if (response.isActive === 1) {
-                        this.is_challenge_active = true
-                    }
+            }).then((res) => {
+                response = res.data
+                // enable game
+                this.challenge_type = response['gameType']
+                this.game = response
+                // check to see if game is active
+                if (response.isActive === 1) {
+                    this.is_challenge_active = true
+                }
 
-                }).catch((err) => {
-                    this.error_message = err.response.data
-                    setTimeout(() => { this.error_message = undefined }, 3000)
-                })
-            }
+            }).catch((err) => {
+                this.error_message = err.response.data
+                setTimeout(() => { this.error_message = undefined }, 3000)
+            })
         },
         update_check_log: function () {
             // request
@@ -109,7 +82,7 @@ export default {
                 }
             }).then((res) => {
                 // update check_log state
-                this.$store.commit('update_check_log', res.data)
+                this.check_log = res.data
             }).catch((err) => {
                 // display error message
                 this.error_message = err.response.data
@@ -125,7 +98,7 @@ export default {
                 }
             }).then((res) => {
                 // update checkpoint state
-                this.$store.commit('update_checkpoint', res.data)
+                this.checkpoint = res.data
             }).catch((err) => {
                 // display error message
                 this.error_message = err.response.data
@@ -134,44 +107,46 @@ export default {
         }
     },
     mounted() {
+        // query check for checkToken
+        if (this.$route.query.checkToken != undefined) {
+            this.check_token = this.$route.query.checkToken
+            // switch to challenge tab if query is present
+            this.tab_location = 1
+        }
         // cookie check
-        if (this.$cookies.get('token') != undefined) {
-            if (this.$cookies.get('token').loginToken != undefined) {
-                this.$emit("unauthorized_access")
+        if (this.token != undefined) {
+            if (this.token.loginToken != undefined) {
                 this.$router.push({
                     name: 'LandingPage',
                 })
+                // disable nav bar
+                this.$store.commit('update_tabs', false)
             }
+            // send tab info
+            this.$store.commit('update_tabs', this.tabs)
+            // send page name
+            this.$store.commit('update_title', this.nav_bar_title)
+            // checkpoint info request
+            if (this.game === undefined && this.check_token != undefined) {
+                this.get_checkpoint_info()
+            }
+            // update check log if state is empty
+            if (JSON.stringify(this.check_log) === '[]') {
+                this.update_check_log()
+            }
+            // update checkpoint if state is empty
+            if (JSON.stringify(this.checkpoint) === '[]') {
+                this.update_checkpoint()
+            }
+            // listening for global emit events
+            // listen for games completing
+            this.$root.$on("gameComplete", this.game_complete)
         } else {
-            this.$emit("unauthorized_access")
             this.$router.push({
                 name: 'LandingPage',
             })
+            this.$store.commit('update_tabs', false)
         }
-        if (this.token === null) {
-            this.$store.dispatch('update_token_cookie')
-        }
-        // send tab info
-        this.emit_tab_info()
-        // if check token was passed through route query
-        this.check_token_request()
-        // update check log if state is empty
-        if (JSON.stringify(this.check_log) === '[]') {
-            this.update_check_log()
-        }
-        // update checkpoint if state is empty
-        if (JSON.stringify(this.checkpoint) === '[]') {
-            this.update_checkpoint()
-        }
-        // listening for global emit events
-        // listen for games completing
-        this.$root.$on("gameComplete", this.game_complete)
-    },
-    props: {
-        tab: {
-            type: Number,
-            required: true,
-        },
     },
     components: {
         RockPaperScissors,
@@ -182,19 +157,47 @@ export default {
         token() {
             return this.$store.state['token']
         },
-        session() {
-            return this.$store.state['session']
+        game: {
+            get() {
+                return this.$store.state['game']
+            },
+            set(value) {
+                this.$store.commit('update_game', value)
+            }
         },
-        game() {
-            return this.$store.state['game']
+        check_log: {
+            get() {
+                return this.$store.state['check_log']
+            },
+            set(value) {
+                this.$store.commit('update_check_log', value)
+            }
         },
-        check_log() {
-            return this.$store.state['check_log']
+        checkpoint: {
+            get() {
+                return this.$store.state['checkpoint']
+            },
+            set(value) {
+                this.$store.commit('update_checkpoint', value)
+            }
         },
-        checkpoint() {
-            return this.$store.state['checkpoint']
-        }
-    },
+        tab_location: {
+            get() {
+                return this.$store.state['tab_location']
+            },
+            set(value) {
+                this.$store.commit('update_tab_location', value)
+            }
+        },
+        check_token: {
+            get() {
+                return this.$store.state['check_token']
+            },
+            set(value) {
+                this.$store.commit('update_check_token', value)
+            }
+        },
+    }
 }
 </script>
 
@@ -204,8 +207,11 @@ export default {
     justify-items: center;
     align-items: start;
     grid-auto-rows: auto;
+    row-gap: 10px;
     width: 100%;
     align-self: start;
+    overflow-y: scroll;
+    max-height: 75vh;
 }
 .nothing_message {
     text-align: center;

@@ -207,7 +207,6 @@ export default {
             this.clear()
             this.$root.$emit("gameResponse", payload)
             // update cookie
-            this.$cookies.set('token', payload)
             this.$store.commit('update_token', payload)
         },
         request_error: function (payload) {
@@ -242,17 +241,8 @@ export default {
             })
         },
         join_game: function () {
-
             // loader on
             this.loading = !this.loading
-            // var request_data = {
-            //     "gameToken": this.room_code,
-            // }
-            // var request_key = ["loginToken", "loginId", "userId"]
-            // for (var i = 0; i < request_key.length; i++) {
-            //     request_data[request_key[i]] = this.token[request_key[i]]
-            // }
-
             // request
             this.$axios.request({
                 url: "http://localhost:5000/api/login",
@@ -269,7 +259,6 @@ export default {
                 this.request_error(err.response.data)
             })
         },
-
     },
     computed: {
         token() {
@@ -277,8 +266,6 @@ export default {
         }
     },
 }
-
-
 </script>
 
 <style>

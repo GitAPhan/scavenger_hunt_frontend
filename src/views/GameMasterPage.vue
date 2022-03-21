@@ -10,17 +10,16 @@ export default {
     data() {
         return {
             tabs: [
-                { title: 'GM1', id: 1, text: 'lorem' },
-                { title: 'GM2', id: 2, text: 'lorem2' },
+                { title: 'admin', id: 1, text: 'lorem' },
+                { title: 'game', id: 2, text: 'lorem2' },
                 { title: 'GM3', id: 3, text: 'lorem3' },
             ],
-            token: this.$cookies.get('token')
+            token: this.$cookies.get('token'),
+            // nav bar title
+            nav_bar_title: 'GM Panel',
         }
     },
     methods: {
-        emit_tab_info: function () {
-            this.$emit('tab_info', this.tabs)
-        },
         react_to_cookie_update: function () {
             // new cookie has been set
             this.token = this.$cookies.get('token')
@@ -31,27 +30,27 @@ export default {
         }
     },
     mounted() {
-        // send tab info
-        this.emit_tab_info()
         // cookie check
         if (this.token != undefined) {
             if (this.token.loginToken != undefined) {
                 this.$router.push({
                     name: 'LandingPage',
                 })
-                this.$emit("unauthorized_access")
+                // disable nav bar
+                this.$store.commit('update_tabs', false)
             }
+            // send tab info
+            this.$store.commit('update_tabs', this.tabs)
+            // send page name
+            this.$store.commit('update_title', this.nav_bar_title)
+
+            
         } else {
             this.$router.push({
                 name: 'LandingPage',
             })
-            this.$emit("unauthorized_access")
+            this.$store.commit('update_tabs', false)
         }
-        // listening for global emit events
-        // tokenSet
-        this.$root.$on('tokenSet', this.react_to_cookie_update);
-        // request alerts
-        this.$root.$on('requestAlert', this.request_alert)
     },
 }
 </script>

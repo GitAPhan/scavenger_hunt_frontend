@@ -176,7 +176,6 @@ export default {
                 })
             }
         },
-
         signup: function () {
             // set button to loader
             this.loading = !this.loading
@@ -200,7 +199,6 @@ export default {
             }).then((res) => {
                 this.clear()
                 // set cookie with token
-                this.$cookies.set('token', res.data)
                 this.$store.commit('update_token', res.data)
                 this.$root.$emit('loginResponse')
             }).catch((err) => {

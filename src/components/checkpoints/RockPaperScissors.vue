@@ -1,6 +1,6 @@
 <template>
     <div class="game_container">
-        <h2 class="make_float">{{ game_message }}{{this.session.gameName}}</h2>
+        <h2 class="make_float">{{ game_message }}{{ game.gameName }}</h2>
         <!-- animated view -->
         <article class="game_window">
             <!-- player choice -->
@@ -51,16 +51,16 @@
             <h3>score:</h3>
             <h2>rounds:</h2>
             <h3>tokens:</h3>
-            <h3>{{ session.pointsWon }}</h3>
-            <h2>{{ session.roundsPlayed }}/{{ session.rounds }}</h2>
-            <h3>{{ session.tokensWon }}</h3>
+            <h3>{{ game.pointsWon }}</h3>
+            <h2>{{ game.roundsPlayed }}/{{ game.rounds }}</h2>
+            <h3>{{ game.tokensWon }}</h3>
         </article>
         <!-- challenge info -->
         <article class="game_info">
             <p>
                 GAME: rock paper scissors
                 <br />
-                PRIZE: {{ session.tokenReward }} tokens & {{ session.pointReward }} points/round
+                PRIZE: {{ game.tokenReward }} tokens & {{ game.pointReward }} points/round
             </p>
         </article>
     </div>
@@ -84,8 +84,8 @@ export default {
         },
         clear() {
             this.choice = undefined,
-            this.comp = undefined,
-            this.loading = !this.loading
+                this.comp = undefined,
+                this.loading = !this.loading
         },
         submit_choice() {
             // loader
@@ -93,10 +93,10 @@ export default {
             let response = undefined
             // prepare request data
             let request_data = {
-                "checkToken": this.game.checkToken,
-                "playerToken": this.game.playerToken,
-                "gameToken": this.game.gameToken,
-                "gameType": this.session.gameType,
+                "checkToken": this.check_token,
+                "playerToken": this.token.playerToken,
+                "gameToken": this.token.gameToken,
+                "gameType": this.game.gameType,
                 "playerChoice": this.choice
             }
             // request
@@ -106,7 +106,7 @@ export default {
                 data: request_data
             }).then((res) => {
                 response = res.data
-                this.$store.commit('update_session', response)
+                this.game = response
                 this.comp = response.lastRound.computer
                 // win check
                 if (response.isActive === 0) {
@@ -114,18 +114,18 @@ export default {
                     // win code
                     setTimeout(() => {
                         this.$root.$emit("gameComplete", response)
-                        this.$store.commit('update_session', undefined)
-                        this.$store.commit('update_game', undefined)
-                    },3000)
-                    
+                        this.game = undefined
+                    }, 3000)
+
                 }
             }).catch((err) => {
                 response = err.response.data
+                // error message to parent?
             })
             setTimeout(() => { this.clear() }, 2000)
         }
     },
-    mounted () {
+    mounted() {
         if (this.token === undefined) {
             this.$store.dispatch('update_token_cookie')
         }
@@ -134,11 +134,18 @@ export default {
         token() {
             return this.$store.state['token']
         },
-        session() {
-            return this.$store.state['session']
+        game: {
+            get() {
+                return this.$store.state['game']
+            },
+            set(value) {
+                this.$store.commit('update_game', value)
+            }
         },
-        game() {
-            return this.$store.state['game']
+        check_token: {
+            get () {
+                return this.$store.state['check_token']
+            }
         }
     },
 }

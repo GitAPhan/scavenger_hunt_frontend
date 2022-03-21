@@ -14,13 +14,12 @@ export default {
                 { title: 'scoreboard', id: 2, text: 'player2' },
                 { title: 'hints', id: 3, text: 'player3' },
             ],
-            token: this.$cookies.get('token')
+            token: this.$cookies.get('token'),
+            // nav bar title
+            nav_bar_title: 'scavenger hunt',
         }
     },
     methods: {
-        emit_tab_info: function () {
-            this.$emit('tab_info', this.tabs)
-        },
         react_to_cookie_update: function () {
             // new cookie has been set
             this.token = this.$cookies.get('token')
@@ -37,22 +36,21 @@ export default {
                 this.$router.push({
                     name: 'LandingPage',
                 })
-                this.$emit("unauthorized_access")
+                // disable nav bar
+                this.$store.commit('update_tabs', false)
             }
+            // send tab info
+            this.$store.commit('update_tabs', this.tabs)
+            // send page name
+            this.$store.commit('update_title', this.nav_bar_title)
+
+            
         } else {
             this.$router.push({
                 name: 'LandingPage',
             })
-            this.$emit("unauthorized_access")
+            this.$store.commit('update_tabs', false)
         }
-        // send tab info
-        this.emit_tab_info()
-        
-        // listening for global emit events
-        // tokenSet
-        this.$root.$on('tokenSet', this.react_to_cookie_update);
-        // request alerts
-        this.$root.$on('requestAlert', this.request_alert)
     },
 }
 </script>
