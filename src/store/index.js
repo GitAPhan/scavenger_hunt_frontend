@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import cookies from 'vue-cookies'
-// import axios from 'axios'
+import axios from 'axios'
+import router from '@/router'
 
 
 Vue.use(Vuex)
@@ -22,6 +23,9 @@ export default new Vuex.Store({
     scoreboard: [],
     user_profile: [],
     user_score: [],
+    user_top_score: undefined,
+    // error message
+    error_message: undefined
   },
   mutations: {
     update_token(state, payload) {
@@ -33,6 +37,13 @@ export default new Vuex.Store({
     },
     update_check_log(state, payload) {
       state.check_log = state.check_log.concat(payload)
+      let checkLog = state.check_log
+      // find best performance 
+      if (JSON.stringify(checkLog) != '[]') {
+        const max_points = Math.max.apply(Math, checkLog.map(function (o) { return o.pointsWon }))
+        const index = checkLog.map(item => item.pointsWon).indexOf(max_points)
+        state.user_top_score = checkLog[index]
+      }
     },
     update_checkpoint(state, payload) {
       state.checkpoint = payload
@@ -60,6 +71,22 @@ export default new Vuex.Store({
     },
     update_user_score(state, payload) {
       state.user_score = payload
+    },
+    update_error_message(state, payload) {
+      state.error_message = payload
+      setTimeout(() => { state.error_message = undefined }, 4000)
+    },
+    logout_clear(state) {
+      state.token = undefined
+      state.game = undefined
+      state.check_log = undefined
+      state.checkpoint = undefined
+      state.tabs = false
+      state.check_token = undefined
+      state.title = 'Scavenger Hunt'
+      state.scoreboard = []
+      state.user_profile = []
+      state.user_score = []
     }
   },
   actions: {
@@ -68,6 +95,37 @@ export default new Vuex.Store({
       console.log('------------- token store -------------')
       console.log(cookies.get('token'))
       console.log('------------- token store -------------')
+    },
+    logout(store) {
+      var request_data = {}
+      var token = store.state.token
+      // request data
+      if ('loginToken' in token) {
+        request_data['loginToken'] = token.loginToken
+      } else if ('playerToken' in token) {
+        request_data['playerToken'] = token.playerToken
+      } else if ('masterToken' in token) {
+        request_data['masterToken'] = token.masterToken
+      } else {
+        router.push({
+          name: 'LandingPage'
+        })
+      }
+      // request
+      axios.request({
+        url: 'http://localhost:5000/api/login',
+        method: 'DELETE',
+        data: request_data
+      }).then((res) => {
+        store.mutations.update_error_message(res.data)
+        cookies.remove('token')
+        router.push({
+          name: 'LandingPage'
+        }).then(() => { store.mutations.logout_clear() })
+      }).catch((err) => {
+        store.mutations.update_error_message(err.response.data)
+        // error message
+      })
     },
   },
 })

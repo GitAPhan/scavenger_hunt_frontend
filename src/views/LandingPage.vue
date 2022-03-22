@@ -26,10 +26,7 @@
                 >LOGIN</v-btn>
             </article>
             <login-form v-else-if="current_page === 1" class="content_block" />
-            <signup-form
-                v-else-if="current_page === 2"
-                class="content_block"
-            />
+            <signup-form v-else-if="current_page === 2" class="content_block" />
             <game-form v-else class="content_block" />
         </transition>
     </div>
@@ -57,10 +54,17 @@ export default {
             this.current_page = 3
         },
         game_response: function () {
-            // navigate to game area
-            this.$router.push({
-                name: 'PlayerPage'
-            })
+            if (this.$store.state['checkToken'] != undefined) {
+                // navigate back to checkpoint if checkToken is present
+                this.$router.push({
+                    name: 'CheckpointPage'
+                }).then(() => { this.$store.commit('update_tab_location', 1) })
+            } else {
+                // navigate to game area
+                this.$router.push({
+                    name: 'PlayerPage'
+                })
+            }
         },
     },
     mounted() {

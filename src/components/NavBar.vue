@@ -21,7 +21,7 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn icon>
+            <v-btn icon @click="$store.dispatch('logout')">
                 <v-icon v-if="tab_location % 2 === 0">mdi-logout-variant</v-icon>
                 <v-icon v-else>mdi-skull-scan-outline</v-icon>
             </v-btn>
@@ -48,6 +48,14 @@
 export default {
     name: 'nav-bar',
     computed: {
+        token: {
+            get() {
+                return this.$store.state['token']
+            },
+            set(value) {
+                this.$store.commit('update_token', value)
+            }
+        },
         tab_location: {
             get() {
                 return this.$store.state['tab_location']

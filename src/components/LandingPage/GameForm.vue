@@ -1,16 +1,6 @@
 <template>
     <div>
         <h3>Welcome {{ this.$cookies.get('token').username }}</h3>
-        <v-alert
-            class="alert_box"
-            v-if="is_error"
-            border="left"
-            color="red"
-            dismissible
-            elevation="5"
-            icon="mdi-alert-outline"
-            type="error"
-        >{{ error_message }}</v-alert>
         <transition name="transition_form_flip" mode="out-in">
             <validation-observer ref="observer" class="place_center" v-slot="{ invalid }">
                 <div v-if="is_join_game">
@@ -182,9 +172,6 @@ export default {
             loading: false,
             room_code: '',
             game_name: '',
-            // error message
-            is_error: false, // used for alert
-            error_message: undefined,
             is_join_game: true,
         }
     },
@@ -212,12 +199,7 @@ export default {
         request_error: function (payload) {
             this.clear()
             // user displayed error
-            this.error_message = payload
-            this.is_error = !this.is_error
-            setTimeout(() => {
-                this.error_message = undefined
-                this.is_error = !this.is_error
-            }, 3000)
+            this.$store.commit('update_error_message', payload)
         },
         create_game: function () {
             // loader on

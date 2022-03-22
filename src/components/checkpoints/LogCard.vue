@@ -1,5 +1,5 @@
 <template>
-    <div v-if="card.isActive ===0" class="log_card">
+    <div v-if="card.isActive ===0" class="log_card" ref="log_card">
         <h2>{{ card.gameName }}</h2>
         <!-- <h3>reward:</h3> -->
         <h5>{{ card.pointsWon }}/{{ card.pointReward * card.roundsPlayed }} points</h5>
@@ -15,6 +15,18 @@ export default {
             type: Object,
             required: true
         },
+        highlight: {
+            type: Boolean,
+            require: true
+        }
+    },
+    mounted() {
+        // check to see if score card belongs to player
+        if (this.highlight) {
+            let card = this.$refs.log_card
+            card.style.border = "3px red solid";
+            card.style.marginTop = '10px'
+        }
     },
 }
 </script>

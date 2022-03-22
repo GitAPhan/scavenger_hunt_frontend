@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Game Master Page</h1>
+        <h1>this feature will be available in the near future</h1>
     </div>
 </template>
 

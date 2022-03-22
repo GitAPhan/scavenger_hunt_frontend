@@ -114,13 +114,11 @@ export default {
                     // win code
                     setTimeout(() => {
                         this.$root.$emit("gameComplete", response)
-                        this.game = undefined
                     }, 3000)
 
                 }
             }).catch((err) => {
-                response = err.response.data
-                // error message to parent?
+                this.$store.commit('update_error_message', err.response.data)
             })
             setTimeout(() => { this.clear() }, 2000)
         }

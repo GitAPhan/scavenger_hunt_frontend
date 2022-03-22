@@ -1,16 +1,6 @@
 <template>
     <div class="login_form">
         <h1>login</h1>
-        <v-alert
-            v-if="is_error"
-            border="left"
-            color="red"
-            dismissible
-            elevation="5"
-            icon="mdi-alert-circle-outline"
-            type="error"
-            class="alert"
-        >{{ error_message }}</v-alert>
         <validation-observer ref="observer" v-slot="{ invalid }">
             <v-form class="center_grid" @submit.prevent="submit">
                 <v-container class="bottom_spacer">
@@ -101,8 +91,6 @@ export default {
             username: '',
             password: '',
             show_password: false,
-            is_error: false, // used for alert
-            error_message: undefined
         }
     },
     methods: {
@@ -134,12 +122,7 @@ export default {
                 this.$root.$emit('loginResponse')
             }).catch((err) => {
                 this.clear()
-                this.is_error = !this.is_error
-                this.error_message = err.response.data
-                setTimeout(() => {
-                    this.error_message = undefined
-                    this.is_error = !this.is_error
-                }, 3000)
+                this.$store.commit("update_error_message", err.response.data)
             }).then(() => {
                 this.loading = !this.loading
             })

@@ -61,6 +61,8 @@ export default {
             })
             this.$store.commit('update_tabs', false)
         }
+        // change to scoreboard location first to grab scoreboard
+        this.$store.commit('update_tab_location', 1)
     },
     computed: {
         scoreboard: {

@@ -22,7 +22,7 @@ export default {
         // check to see if score card belongs to player
         if (this.token.userId === this.score.userId) {
             let card = this.$refs.profile_card
-            card.style.border = "2px black solid";            
+            card.style.border = "4px black solid";            
             this.$store.commit('update_user_score', this.score)
         }
     },

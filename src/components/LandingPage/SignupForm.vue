@@ -64,16 +64,6 @@
                         ></v-checkbox>
                     </validation-provider>
                 </div>
-                <v-alert
-                    v-if="is_error"
-                    border="left"
-                    color="red"
-                    dismissible
-                    elevation="5"
-                    icon="mdi-alert-outline"
-                    class="alert"
-                    type="error"
-                >{{ error_message }}</v-alert>
                 <v-btn
                     outlined
                     min-width="150px"
@@ -142,9 +132,6 @@ export default {
             show_password: false,
             username_message: "",
             is_username_avail: true,
-            // error message
-            is_error: false, // used for alert
-            error_message: undefined
         }
     },
     methods: {
@@ -203,7 +190,7 @@ export default {
                 this.$root.$emit('loginResponse')
             }).catch((err) => {
                 this.clear()
-                this.error_message = err.response.data
+                this.$store.commit("update_error_message", err.response.data)
             }).then(() => {
                 this.loading = !this.loading
             })

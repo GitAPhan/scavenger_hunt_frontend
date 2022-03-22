@@ -4,19 +4,28 @@
         <article v-if="tab_location === 1 && is_challenge_active">
             <rock-paper-scissors v-if="challenge_type === 0" />
         </article>
-        <!-- checkpoint tab -->
-        <article class="log_container" v-else-if="tab_location === 2">
-            <log-card v-for="card in check_log" :key="card.checkpointId" :card="card" />
-        </article>
-        <!-- log tab -->
+        <!-- checkin tab -->
         <article class="log_container" v-else-if="tab_location === 0">
+            <log-card
+                :highlight="false"
+                v-for="card in check_log"
+                :key="card.checkpointId"
+                :card="card"
+            />
+            <log-card
+                :highlight="true"
+                v-if="temp_checkin_card != undefined"
+                :card="temp_checkin_card"
+            />
+        </article>
+        <!-- location tab -->
+        <article class="log_container" v-else-if="tab_location === 2">
             <view-card v-for="card in checkpoint" :key="card.checkpointId + 365.4" :card="card" />
         </article>
         <!-- the tab -->
         <article class="nothing_message" v-else>
             <h1>{{ tabs[1]['title'] }}</h1>
             <h4>there are currently none available</h4>
-            <p>{{ error_message }}</p>
         </article>
     </div>
 </template>
@@ -31,21 +40,24 @@ export default {
     data() {
         return {
             tabs: [
-                { title: 'check', id: 1, text: 'lorem' },
+                { title: 'check-in', id: 1, text: 'lorem' },
                 { title: 'challenge', id: 2, text: 'lorem2' },
-                { title: 'point', id: 3, text: 'lorem3' },
+                { title: 'location', id: 3, text: 'lorem3' },
             ],
             is_challenge_active: false,
             challenge_type: undefined,
-            error_message: undefined,
             // nav bar title
             nav_bar_title: 'checkpoint',
+            temp_checkin_card: undefined,
         }
     },
     methods: {
         game_complete: function (game_result) {
-            this.tab_location = 2
+            this.tab_location = 0
             this.is_challenge_active = false
+            // clear store game info
+            this.check_token = undefined
+            this.game = undefined
             // store the result somewhere for the log tab            
             this.check_log = game_result
         },
@@ -66,6 +78,16 @@ export default {
                 // check to see if game is active
                 if (response.isActive === 1) {
                     this.is_challenge_active = true
+                } else {
+                    // switch to log tab
+                    this.tab_location = 0
+                    // show finished game result
+                    this.temp_checkin_card = response
+                    this.$store.commit('update_error_message', 'looks like you have already completed this game')
+                    this.check_token = undefined
+                    this.game = undefined
+
+                    setTimeout(() => { this.temp_checkin_card = undefined }, 3000)
                 }
 
             }).catch((err) => {
@@ -107,6 +129,8 @@ export default {
         }
     },
     mounted() {
+        // default tab = location
+        this.tab_location = 2
         // query check for checkToken
         if (this.$route.query.checkToken != undefined) {
             this.check_token = this.$route.query.checkToken

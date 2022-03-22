@@ -22,17 +22,12 @@ export default {
             }).then((res) => {
                 this.scoreboard = res.data
             }).catch((err) => {
-                console.log(err)
-                console.log(err.response.data)
-                console.log("------------------- scoreboard axios call fail --------------------")
+                this.$store.commit('update_error_message', err.response.data)
             })
         }
     },
     mounted() {
-        // if (JSON.stringify(this.scoreboard) === "[]") {
-            // only run request if scoreboard state is empty
-            this.get_scoreboard();
-        // }        
+        this.get_scoreboard();
     },
     computed: {
         token: {
