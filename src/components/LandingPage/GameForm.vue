@@ -224,7 +224,7 @@ export default {
             }
             // request
             this.$axios.request({
-                url: "http://localhost:5000/api/games",
+                url: "https://scavenger.ga/api/games",
                 method: "POST",
                 data: request_data
             }).then((res) => {
@@ -238,7 +238,7 @@ export default {
             this.loading = !this.loading
             // request
             this.$axios.request({
-                url: "http://localhost:5000/api/login",
+                url: "https://scavenger.ga/api/login",
                 method: "PATCH",
                 data: {
                     "loginToken": this.token['loginToken'],

@@ -15,7 +15,7 @@ export default {
         get_scoreboard() {
             // request
             this.$axios.request({
-                url: 'http://localhost:5000/api/check-in/standing',
+                url: 'https://scavenger.ga/api/check-in/standing',
                 params: {
                     "gameToken": this.token.gameToken
                 }

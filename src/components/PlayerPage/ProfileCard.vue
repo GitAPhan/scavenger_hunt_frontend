@@ -32,7 +32,7 @@ export default {
         get_user_profile() {
             // request
             this.$axios.request({
-                url: 'http://localhost:5000/api/users',
+                url: 'https://scavenger.ga/api/users',
                 params: {
                     "userId": this.token.userId
                 }
