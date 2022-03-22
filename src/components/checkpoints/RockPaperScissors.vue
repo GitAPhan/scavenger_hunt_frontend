@@ -1,8 +1,14 @@
 <template>
     <div class="game_container">
         <h2 class="make_float">{{ game_message }}{{ game.gameName }}</h2>
+        <!-- game result -->
+        <article class="result_window" v-if="last_round != undefined">
+            <h3>{{ round_result }}</h3>
+            <h4>You: {{ last_round.player }}</h4>
+            <h4>Computer: {{ last_round.computer }}</h4>
+        </article>
         <!-- animated view -->
-        <article class="game_window">
+        <article v-else class="game_window">
             <!-- computer choice -->
             <section>
                 <!-- computer selection animation -->
@@ -21,11 +27,11 @@
                 </span>
             </section>
             <!-- player choice -->
-            <transition name="swap" mode="out-in">
-                <img v-if="choice === 'ROCK'" src="rock_right.png" alt="rock" />
-                <img v-else-if="choice === 'PAPER'" src="paper_right.png" alt="paper" />
-                <img v-else-if="choice === 'SCISSORS'" src="scissors_right.png" alt="scissors" />
-            </transition>
+            <!-- <transition name="swap" mode="out-in"> -->
+            <img v-if="choice === 'ROCK'" src="rock_right.png" alt="rock" />
+            <img v-else-if="choice === 'PAPER'" src="paper_right.png" alt="paper" />
+            <img v-else-if="choice === 'SCISSORS'" src="scissors_right.png" alt="scissors" />
+            <!-- </transition> -->
         </article>
         <!-- your choice -->
         <article class="game_buttons">
@@ -88,6 +94,21 @@ export default {
             loading: false,
             animation: 0,
             last_round: undefined,
+            round_result: undefined
+        }
+    },
+    watch: {
+        last_round() {
+            console.log('last_round value change')
+            if (this.last_round != undefined) {
+                if (this.last_round.isWin === 1) {
+                    this.round_result = "nice WIN!"
+                } else if (this.last_round.isWin === 0) {
+                    this.round_result = "is a TIE is better than a lost?"
+                } else {
+                    this.round_result = "too bad! Looks like you LOST!"
+                }
+            }
         }
     },
     methods: {
@@ -121,12 +142,16 @@ export default {
                 response = res.data
                 this.game = response
                 this.comp = response.lastRound.computer
-                this.last_round = response.lastRound
+                setTimeout(() => {
+                    this.last_round = response.lastRound
+                    setTimeout(() => { this.last_round = undefined }, 2000)
+                }, 500)
+
                 // win check
                 if (response.isActive === 0) {
-                    delete response.lastRound
                     // win code
                     setTimeout(() => {
+                        delete response.lastRound
                         this.$root.$emit("gameComplete", response)
                     }, 3000)
 
@@ -209,6 +234,12 @@ h2 {
     display: grid;
     place-items: center;
     grid-template-columns: 1fr 1fr;
+    width: 100%;
+    height: 120px;
+}
+.result_window {
+    display: grid;
+    place-items: center;
     width: 100%;
     height: 120px;
 }

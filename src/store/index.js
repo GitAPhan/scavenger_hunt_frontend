@@ -79,8 +79,8 @@ export default new Vuex.Store({
     logout_clear(state) {
       state.token = undefined
       state.game = undefined
-      state.check_log = undefined
-      state.checkpoint = undefined
+      state.check_log = []
+      state.checkpoint = []
       state.tabs = false
       state.check_token = undefined
       state.title = 'Scavenger Hunt'

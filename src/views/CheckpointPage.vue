@@ -152,10 +152,6 @@ export default {
             this.$store.commit('update_tabs', this.tabs)
             // send page name
             this.$store.commit('update_title', this.nav_bar_title)
-            // checkpoint info request
-            if (this.game === undefined && this.check_token != undefined) {
-                this.get_checkpoint_info()
-            }
             // update check log if state is empty
             if (JSON.stringify(this.check_log) === '[]') {
                 this.update_check_log()
@@ -163,6 +159,10 @@ export default {
             // update checkpoint if state is empty
             if (JSON.stringify(this.checkpoint) === '[]') {
                 this.update_checkpoint()
+            }
+            // checkpoint info request
+            if (this.game === undefined && this.check_token != undefined) {
+                this.get_checkpoint_info()
             }
             // listening for global emit events
             // listen for games completing
