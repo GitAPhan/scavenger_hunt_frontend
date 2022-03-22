@@ -2,26 +2,12 @@
   <v-app>
     <nav-drawer />
     <nav-bar />
-    
+
     <v-main>
       <transition name="transition_page_flip" mode="out-in">
         <router-view />
       </transition>
     </v-main>
-    <v-alert
-      class="error_alert"
-      color="red"
-      dense
-      dismissible
-      elevation="9"
-      icon="mdi-alert-outline"
-      outlined
-      shaped
-      text
-      transition="slide-x-transition"
-      v-if="error_message != undefined"
-      type="error"
-    >{{error_message}}</v-alert>
   </v-app>
 </template>
 
@@ -33,21 +19,6 @@ import NavBar from '@/components/NavBar.vue';
 export default {
   components: { NavDrawer, NavBar },
   name: 'App',
-
-  data() {
-    return {
-    }
-  },
-  computed: {
-    error_message: {
-      get() {
-        return this.$store.state['error_message']
-      },
-      set(value) {
-        this.$store.commit('update_error_message', value)
-      }
-    }
-  },
   mounted() {
     // check cookie and compare to state
     if (this.$cookies.get('token') != undefined) {
@@ -59,14 +30,6 @@ export default {
 };
 </script>
 <style>
-.error_alert {
-  position: sticky;
-  z-index: 10;
-  bottom: 5px;
-  max-width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-}
 .v-main {
   padding: 50px 0px 0px;
 }

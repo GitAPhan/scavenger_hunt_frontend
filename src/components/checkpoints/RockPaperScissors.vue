@@ -3,17 +3,28 @@
         <h2 class="make_float">{{ game_message }}{{ game.gameName }}</h2>
         <!-- animated view -->
         <article class="game_window">
+            <!-- computer choice -->
+            <section>
+                <!-- computer selection animation -->
+                <span v-if="comp === undefined">
+                    <transition name="swap" mode="out-in">
+                        <img v-if="animation === 1" src="rock_left.png" alt="rock" />
+                        <img v-else-if="animation === 3" src="paper_left.png" alt="paper" />
+                        <img v-else-if="animation === 5" src="scissors_left.png" alt="scissors" />
+                    </transition>
+                </span>
+                <!-- actual choice -->
+                <span>
+                    <img v-if="comp === 'ROCK'" src="rock_left.png" alt="rock" />
+                    <img v-else-if="comp === 'PAPER'" src="paper_left.png" alt="paper" />
+                    <img v-else-if="comp === 'SCISSORS'" src="scissors_left.png" alt="scissors" />
+                </span>
+            </section>
             <!-- player choice -->
             <transition name="swap" mode="out-in">
-                <img v-if="choice === 'ROCK'" src="rock_left.png" alt="rock" />
-                <img v-else-if="choice === 'PAPER'" src="paper_left.png" alt="paper" />
-                <img v-else-if="choice === 'SCISSORS'" src="scissors_left.png" alt="scissors" />
-                <!-- computer choice -->
-            </transition>
-            <transition name="swap" mode="out-in">
-                <img v-if="comp === 'ROCK'" src="rock_right.png" alt="rock" />
-                <img v-else-if="comp === 'PAPER'" src="paper_right.png" alt="paper" />
-                <img v-else-if="comp === 'SCISSORS'" src="scissors_right.png" alt="scissors" />
+                <img v-if="choice === 'ROCK'" src="rock_right.png" alt="rock" />
+                <img v-else-if="choice === 'PAPER'" src="paper_right.png" alt="paper" />
+                <img v-else-if="choice === 'SCISSORS'" src="scissors_right.png" alt="scissors" />
             </transition>
         </article>
         <!-- your choice -->
@@ -75,6 +86,7 @@ export default {
             comp: undefined,
             game_message: "You've reached ",
             loading: false,
+            animation: 0,
         }
     },
     methods: {
@@ -127,6 +139,17 @@ export default {
         if (this.token === undefined) {
             this.$store.dispatch('update_token_cookie')
         }
+        if (this.comp === undefined) {
+            var counter = setInterval(() => {
+                this.animation++
+                if (this.animation === 6) {
+                    this.animation = 0
+                }
+            }, 500)
+        } else {
+            clearInterval(counter)
+        }
+
     },
     computed: {
         token() {
@@ -141,7 +164,7 @@ export default {
             }
         },
         check_token: {
-            get () {
+            get() {
                 return this.$store.state['check_token']
             }
         }
@@ -191,7 +214,9 @@ img {
     height: 75px;
 }
 /* // transition settings // */
-.swap-enter-active,
+.swap-enter-active {
+    transition: all 0.75s ease-in-out;
+}
 .swap-leave-active {
     transition: all 0.45s ease-in-out;
 }

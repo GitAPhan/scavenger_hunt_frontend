@@ -1,5 +1,19 @@
 <template>
     <div>
+        <span v-if="error_message != undefined" class="error_container">
+            <v-alert
+                class="error_alert"
+                color="red"
+                dense
+                dismissible
+                elevation="9"
+                icon="mdi-alert-outline"
+                shaped
+                text
+                transition="slide-x-transition"               
+                type="error"
+            >{{ error_message }}</v-alert>
+        </span>
         <v-app-bar
             app
             color="primary"
@@ -77,10 +91,27 @@ export default {
         },
         title() {
             return this.$store.state['title']
+        },
+        error_message: {
+            get() {
+                return this.$store.state['error_message']
+            },
         }
     },
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+.error_container {    
+    display: grid;
+    place-items: center;
+    top: 105px;
+    position: absolute;
+    z-index: 100;
+    width: 100%;
+}
+.error_alert {
+    max-width: 90%;
+    min-width: 300px;
+}
 </style>
