@@ -87,6 +87,7 @@ export default {
             game_message: "You've reached ",
             loading: false,
             animation: 0,
+            last_round: undefined,
         }
     },
     methods: {
@@ -120,6 +121,7 @@ export default {
                 response = res.data
                 this.game = response
                 this.comp = response.lastRound.computer
+                this.last_round = response.lastRound
                 // win check
                 if (response.isActive === 0) {
                     delete response.lastRound

@@ -192,9 +192,20 @@ export default {
         },
         request_success: function (payload) {
             this.clear()
-            this.$root.$emit("gameResponse", payload)
             // update cookie
             this.$store.commit('update_token', payload)
+            if (this.$store.state['check_token'] != undefined) {
+                // navigate back to checkpoint if checkToken is present
+                this.$store.commit('update_tab_location', 1)
+                this.$router.push({
+                    name: 'CheckpointPage'
+                })
+            } else {
+                // navigate to game area
+                this.$router.push({
+                    name: 'PlayerPage'
+                })
+            }
         },
         request_error: function (payload) {
             this.clear()
@@ -245,7 +256,7 @@ export default {
     computed: {
         token() {
             return this.$store.state['token']
-        }
+        },
     },
 }
 </script>

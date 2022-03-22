@@ -130,7 +130,9 @@ export default {
     },
     mounted() {
         // default tab = location
-        this.tab_location = 2
+        if (this.check_token === undefined) {
+            this.tab_location = 2
+        }
         // query check for checkToken
         if (this.$route.query.checkToken != undefined) {
             this.check_token = this.$route.query.checkToken
@@ -169,6 +171,8 @@ export default {
             this.$router.push({
                 name: 'LandingPage',
             })
+            // error message
+            this.$store.commit('update_error_message', "please sign in first to continue...")
             this.$store.commit('update_tabs', false)
         }
     },

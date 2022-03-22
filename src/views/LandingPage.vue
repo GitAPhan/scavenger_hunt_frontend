@@ -54,24 +54,36 @@ export default {
             this.current_page = 3
         },
         game_response: function () {
-            if (this.$store.state['checkToken'] != undefined) {
-                // navigate back to checkpoint if checkToken is present
-                this.$router.push({
-                    name: 'CheckpointPage'
-                }).then(() => { this.$store.commit('update_tab_location', 1) })
-            } else {
-                // navigate to game area
-                this.$router.push({
-                    name: 'PlayerPage'
-                })
-            }
+            // if (this.$store.state['checkToken'] != undefined) {
+            //     // navigate back to checkpoint if checkToken is present
+            //     this.$router.push({
+            //         name: 'CheckpointPage'
+            //     }).then(() => { this.$store.commit('update_tab_location', 1) })
+            // } else {
+            //     // navigate to game area
+            //     this.$router.push({
+            //         name: 'PlayerPage'
+            //     })
+            // }
+            console.log('hi')
         },
     },
     mounted() {
         // if token is present *user has signed in/up
         if (this.$cookies.get('token') != undefined) {
             if (this.$cookies.get('token').playerToken != undefined || this.$cookies.get('token').masterToken != undefined) {
-                this.game_response()
+                // this.game_response()
+                if (this.$store.state['checkToken'] != undefined) {
+                    // navigate back to checkpoint if checkToken is present
+                    this.$router.push({
+                        name: 'CheckpointPage'
+                    }).then(() => { this.$store.commit('update_tab_location', 1) })
+                } else {
+                    // navigate to game area
+                    this.$router.push({
+                        name: 'PlayerPage'
+                    })
+                }
             } else if (this.$cookies.get('token').loginToken) {
                 this.current_page = 3
             }

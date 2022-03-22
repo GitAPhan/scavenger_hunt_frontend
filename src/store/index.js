@@ -87,14 +87,12 @@ export default new Vuex.Store({
       state.scoreboard = []
       state.user_profile = []
       state.user_score = []
+      state.user_top_score = undefined
     }
   },
   actions: {
     update_token_cookie(store) {
       store.commit('update_token', cookies.get('token'))
-      console.log('------------- token store -------------')
-      console.log(cookies.get('token'))
-      console.log('------------- token store -------------')
     },
     logout(store) {
       var request_data = {}
@@ -117,13 +115,16 @@ export default new Vuex.Store({
         method: 'DELETE',
         data: request_data
       }).then((res) => {
-        store.mutations.update_error_message(res.data)
         cookies.remove('token')
         router.push({
           name: 'LandingPage'
-        }).then(() => { store.mutations.logout_clear() })
+        }).then(() => {
+          store.commit('logout_clear')
+          store.commit('update_error_message', res.data)
+        })
       }).catch((err) => {
-        store.mutations.update_error_message(err.response.data)
+        console.log(err)
+        store.commit('update_error_message', err.response.data)
         // error message
       })
     },

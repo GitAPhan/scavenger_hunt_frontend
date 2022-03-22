@@ -1,6 +1,7 @@
 <template>
     <div>
         <span v-if="error_message != undefined" class="error_container">
+            <span class="error_message_spacer" v-if="tabs === false"></span>
             <v-alert
                 class="error_alert"
                 color="red"
@@ -10,7 +11,7 @@
                 icon="mdi-alert-outline"
                 shaped
                 text
-                transition="slide-x-transition"               
+                transition="slide-x-transition"
                 type="error"
             >{{ error_message }}</v-alert>
         </span>
@@ -102,7 +103,10 @@ export default {
 </script>
 
 <style scoped>
-.error_container {    
+.error_message_spacer {
+    height: 100px;
+}
+.error_container {
     display: grid;
     place-items: center;
     top: 105px;
