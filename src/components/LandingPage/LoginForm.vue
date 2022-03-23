@@ -112,7 +112,7 @@ export default {
             }
             // request to database
             this.$axios.request({
-                url: "https://scavenger.ga/api/login",
+                url: "http://localhost:5000/api/login",
                 method: "POST",
                 data: request_data
             }).then((res) => {

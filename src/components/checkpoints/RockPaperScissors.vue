@@ -135,7 +135,7 @@ export default {
             }
             // request
             this.$axios.request({
-                url: "https://scavenger.ga/api/check-in",
+                url: "http://localhost:5000/api/check-in",
                 method: 'POST',
                 data: request_data
             }).then((res) => {

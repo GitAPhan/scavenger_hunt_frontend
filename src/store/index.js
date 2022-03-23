@@ -111,7 +111,7 @@ export default new Vuex.Store({
       }
       // request
       axios.request({
-        url: 'https://scavenger.ga/api/login',
+        url: 'http://localhost:5000/api/login',
         method: 'DELETE',
         data: request_data
       }).then((res) => {

@@ -65,7 +65,7 @@ export default {
             // request
             let response = undefined
             this.$axios.request({
-                url: 'https://scavenger.ga/api/check-in',
+                url: 'http://localhost:5000/api/check-in',
                 params: {
                     "userId": this.token.userId,
                     "checkToken": this.check_token
@@ -98,7 +98,7 @@ export default {
         update_check_log: function () {
             // request
             this.$axios.request({
-                url: "https://scavenger.ga/api/check-in/log",
+                url: "http://localhost:5000/api/check-in/log",
                 params: {
                     "userId": this.token.userId
                 }
@@ -114,7 +114,7 @@ export default {
         update_checkpoint: function () {
             // request
             this.$axios.request({
-                url: "https://scavenger.ga/api/checkpoints",
+                url: "http://localhost:5000/api/checkpoints",
                 params: {
                     "gameToken": this.token.gameToken
                 }

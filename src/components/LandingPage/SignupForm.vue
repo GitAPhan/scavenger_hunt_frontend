@@ -150,7 +150,7 @@ export default {
             if (this.username.length > 7 && this.username.length < 31) {
                 // request
                 this.$axios.request({
-                    url: "https://scavenger.ga/api/login",
+                    url: "http://localhost:5000/api/login",
                     params: {
                         "username": this.username
                     }
@@ -180,7 +180,7 @@ export default {
 
             // request
             this.$axios.request({
-                url: "https://scavenger.ga/api/users",
+                url: "http://localhost:5000/api/users",
                 method: "POST",
                 data: request_data
             }).then((res) => {
