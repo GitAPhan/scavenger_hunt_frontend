@@ -9,7 +9,8 @@
                 </div>
                 <div v-else>
                     <h2>CREATE GAME</h2>
-                    <p>What would you like the name of the game to be?</p>
+                    <!-- <p>What would you like the name of the game to be?</p> -->
+                    <p>This feature is currently disabled</p>
                 </div>
                 <v-form class="center_grid" @submit.prevent="submit">
                     <validation-provider
@@ -90,9 +91,8 @@
                             color="primary"
                             type="submit"
                             :loading="loading"
-                            :disabled="loading"
-                            @click="create_game"
-                        >create game</v-btn>
+                            :disabled="true"
+                        >UNAVAILABLE</v-btn>
                     </div>
                 </v-form>
                 <!-- or -->
