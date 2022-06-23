@@ -1,9 +1,6 @@
 <template>
   <div>
     <h3>Welcome {{ this.$cookies.get("token").username }}</h3>
-    <v-icon large @click="logout" id="logout_button">
-      mdi-logout-variant
-    </v-icon>
     <transition name="transition_form_flip" mode="out-in">
       <validation-observer
         ref="observer"
@@ -201,10 +198,6 @@ export default {
     };
   },
   methods: {
-    logout: function () {
-      this.$store.dispatch("logout");
-      this.$root.$emit("logoutResponse");
-    },
     clear: function () {
       this.loading = !this.loading;
       this.room_code = "";
@@ -297,11 +290,6 @@ export default {
 </script>
 
 <style>
-#logout_button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
 .alert_box {
   position: absolute;
 }
