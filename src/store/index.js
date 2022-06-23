@@ -121,6 +121,7 @@ export default new Vuex.Store({
         }).then(() => {
           store.commit('logout_clear')
           store.commit('update_error_message', res.data)
+          this.$root.$emit('logoutResponse')
         })
       }).catch((err) => {
         console.log(err)

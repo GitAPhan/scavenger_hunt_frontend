@@ -53,19 +53,8 @@ export default {
         login_response: function () {
             this.current_page = 3
         },
-        game_response: function () {
-            // if (this.$store.state['checkToken'] != undefined) {
-            //     // navigate back to checkpoint if checkToken is present
-            //     this.$router.push({
-            //         name: 'CheckpointPage'
-            //     }).then(() => { this.$store.commit('update_tab_location', 1) })
-            // } else {
-            //     // navigate to game area
-            //     this.$router.push({
-            //         name: 'PlayerPage'
-            //     })
-            // }
-            console.log('hi')
+        logout_response: function () {
+            this.current_page = 0
         },
     },
     mounted() {
@@ -92,7 +81,7 @@ export default {
         // loginResponse
         this.$root.$on('loginResponse', this.login_response);
         // gameResponse
-        this.$root.$on('gameResponse', this.game_response)
+        this.$root.$on('logoutResponse', this.logout_response)
     },
 }
 </script>
