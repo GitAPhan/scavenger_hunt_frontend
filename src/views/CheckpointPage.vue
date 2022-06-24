@@ -22,6 +22,15 @@
         <article class="log_container" v-else-if="tab_location === 2">
             <view-card v-for="card in checkpoint" :key="card.checkpointId + 365.4" :card="card" />
         </article>
+        <!-- ongoing games tab -->
+        <article class="log_container" v-else-if="tab_location === 1 && JSON.stringify(open_checkpoints) != '[]' && !is_challenge_active">
+            <v-card
+                :rounded="true"
+                :raised="true" 
+                v-for="check in open_checkpoints" :key="check">
+                <v-card-title>{{check}}</v-card-title>
+            </v-card>
+        </article>
         <!-- the tab -->
         <article class="nothing_message" v-else>
             <h1>{{ tabs[1]['title'] }}</h1>
@@ -49,6 +58,7 @@ export default {
             // nav bar title
             nav_bar_title: 'checkpoint',
             temp_checkin_card: undefined,
+            open_checkpoints: []
         }
     },
     methods: {
@@ -110,6 +120,19 @@ export default {
                 this.error_message = err.response.data
                 setTimeout(() => { this.error_message = undefined }, 6000)
             })
+        },
+        check_for_open_checkpoints: function () {
+            // request
+            this.$axios.request({
+                url: "http://localhost:5000/api/checkpoints/status",
+                params: {
+                    "userId": this.token.userId
+                }
+            }).then((res) => {
+                this.open_checkpoints = res.data
+            }).catch((err) => {
+                console.log(err.response.data)
+            })
         }
     },
     mounted() {
@@ -148,7 +171,8 @@ export default {
             if (this.game === undefined && this.check_token != undefined) {
                 this.get_checkpoint_info()
             }
-            // listening for global emit events
+            // check to see if there are any open checkpoints
+            this.check_for_open_checkpoints()
             // listen for games completing
             this.$root.$on("gameComplete", this.game_complete)
         } else {
