@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-icon large @click="logout" id="logout_button" v-if="current_page != 0">
-      mdi-logout-variant
+      mdi-chevron-left
     </v-icon>
     <section class="title_block">
       <h1>SCAVENGER</h1>
@@ -102,8 +102,8 @@ export default {
 <style lang="scss">
 #logout_button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  bottom: 10px;
+  left: 10px;
 }
 .title_block {
   display: grid;
