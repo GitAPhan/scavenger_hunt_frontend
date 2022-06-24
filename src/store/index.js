@@ -63,12 +63,12 @@ export default new Vuex.Store({
     update_title(state, payload) {
       state.title = payload
     },
-    update_scoreboard(state, payload) {
-      state.scoreboard = payload
-    },
-    update_user_profile(state, payload) {
-      state.user_profile = payload
-    },
+    // update_scoreboard(state, payload) {
+    //   state.scoreboard = payload
+    // },
+    // update_user_profile(state, payload) {
+    //   state.user_profile = payload
+    // },
     update_user_score(state, payload) {
       state.user_score = payload
     },
@@ -128,11 +128,11 @@ export default new Vuex.Store({
     get_user_profile: function (store) {
       // request
       axios.request({
-          url: "http://localhost:5000/api/users",
-          params: {
-            userId: store.state.token.userId,
-          },
-        })
+        url: "http://localhost:5000/api/users",
+        params: {
+          userId: store.state.token.userId,
+        },
+      })
         .then((res) => {
           store.state.user_profile = res.data;
         })
@@ -150,7 +150,14 @@ export default new Vuex.Store({
         }
       }).then((res) => {
         // update check_log state
-        store.state.check_log = res.data
+        let checkLog = res.data
+        store.state.check_log = checkLog
+        // find best performance 
+        if (JSON.stringify(checkLog) != '""') {
+          const max_points = Math.max.apply(Math, checkLog.map(function (o) { return o.pointsWon }))
+          const index = checkLog.map(item => item.pointsWon).indexOf(max_points)
+          store.state.user_top_score = checkLog[index]
+        }
       }).catch((err) => {
         // display error message
         store.state.error_message = err.response.data
@@ -173,7 +180,7 @@ export default new Vuex.Store({
     login_success(store) {
       // update user profile if state is empty
       if (JSON.stringify(store.state.user_profile) === "[]") {
-        store.commit("update_user_profile");
+        store.dispatch("get_user_profile");
       }
       // update scoreboard if empty
       if (JSON.stringify(store.state.scoreboard) === '[]') {

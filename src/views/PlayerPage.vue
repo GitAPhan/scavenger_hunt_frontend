@@ -66,9 +66,6 @@ export default {
             get() {
                 return this.$store.state['scoreboard']
             },
-            set(value) {
-                this.$store.commit('update_scoreboard', value)
-            }
         },
         tab_location: {
             get() {

@@ -50,9 +50,6 @@ export default {
       get() {
         return this.$store.state["user_profile"];
       },
-      set(value) {
-        this.$store.commit("update_user_profile", value);
-      },
     },
     user_score: {
       get() {
@@ -65,12 +62,14 @@ export default {
       },
     },
   },
-  mounted() {
-    if (JSON.stringify(this.user_profile) === "[]") {
-      this.$store.dispatch("get_user_profile");
-    }
-
-  },
+//   mounted() {
+//     if (
+//       JSON.stringify(this.user_profile) === "[]" ||
+//       JSON.stringify(this.user_profile) === '""'
+//     ) {
+//       this.$store.dispatch("get_user_profile");
+//     }
+//   },
 };
 </script>
 
