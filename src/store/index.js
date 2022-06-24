@@ -172,7 +172,7 @@ export default new Vuex.Store({
           "gameToken": store.state.token.gameToken
         }
       }).then((res) => {
-        store.commit('update_scoreboard', res.data)
+        store.state.scoreboard = res.data
       }).catch((err) => {
         store.commit('update_error_message', err.response.data)
       })

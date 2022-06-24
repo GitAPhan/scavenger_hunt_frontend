@@ -11,9 +11,9 @@ import ScoreCard from '@/components/PlayerPage/ScoreCard.vue'
 export default {
     components: { ScoreCard },
     name: 'score-board-card',
-    mounted() {
-        this.$store.dispatch('get_scoreboard');
-    },
+    // mounted() {
+    //     this.$store.dispatch('get_scoreboard');
+    // },
     computed: {
         token: {
             get() {
