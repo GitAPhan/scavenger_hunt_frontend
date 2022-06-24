@@ -40,25 +40,6 @@
 <script>
 export default {
   name: "profile-card",
-  methods: {
-    get_user_profile() {
-      // request
-      this.$axios
-        .request({
-          url: "http://localhost:5000/api/users",
-          params: {
-            userId: this.token.userId,
-          },
-        })
-        .then((res) => {
-          this.user_profile = res.data;
-        })
-        .catch((err) => {
-          this.$store.commit("update_error_message", err.response.data);
-          // error message
-        });
-    },
-  },
   computed: {
     token: {
       get() {
@@ -86,8 +67,9 @@ export default {
   },
   mounted() {
     if (JSON.stringify(this.user_profile) === "[]") {
-      this.get_user_profile();
+      this.$store.dispatch("get_user_profile");
     }
+
   },
 };
 </script>

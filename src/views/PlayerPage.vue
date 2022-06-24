@@ -36,9 +36,6 @@ export default {
             nav_bar_title: 'scavenger hunt',
         }
     },
-    methods: {
-
-    },
     mounted() {
         // cookie check
         if (this.$cookies.get('token') != undefined) {

@@ -104,10 +104,6 @@ export default new Vuex.Store({
         request_data['playerToken'] = token.playerToken
       } else if ('masterToken' in token) {
         request_data['masterToken'] = token.masterToken
-      } else {
-        router.push({
-          name: 'LandingPage'
-        })
       }
       // request
       axios.request({
@@ -116,18 +112,77 @@ export default new Vuex.Store({
         data: request_data
       }).then((res) => {
         cookies.remove('token')
-        router.push({
-          name: 'LandingPage'
-        }).then(() => {
-          store.commit('logout_clear')
-          store.commit('update_error_message', res.data)
-          this.$root.$emit('logoutResponse')
-        })
+        if (router.currentRoute.name != 'LandingPage') {
+          router.push({
+            name: 'LandingPage'
+          })
+        }
+        store.commit('logout_clear')
+        store.commit('update_error_message', res.data)
+
       }).catch((err) => {
-        console.log(err)
         store.commit('update_error_message', err.response.data)
         // error message
       })
+    },
+    get_user_profile: function (store) {
+      // request
+      axios.request({
+          url: "http://localhost:5000/api/users",
+          params: {
+            userId: store.state.token.userId,
+          },
+        })
+        .then((res) => {
+          store.state.user_profile = res.data;
+        })
+        .catch((err) => {
+          store.commit("update_error_message", err.response.data);
+          // error message
+        });
+    },
+    get_check_log: function (store) {
+      // request
+      axios.request({
+        url: "http://localhost:5000/api/check-in/log",
+        params: {
+          "userId": store.state.token.userId
+        }
+      }).then((res) => {
+        // update check_log state
+        store.state.check_log = res.data
+      }).catch((err) => {
+        // display error message
+        store.state.error_message = err.response.data
+        setTimeout(() => { store.state.error_message = undefined }, 6000)
+      })
+    },
+    get_scoreboard(store) {
+      // request
+      axios.request({
+        url: 'http://localhost:5000/api/check-in/standing',
+        params: {
+          "gameToken": store.state.token.gameToken
+        }
+      }).then((res) => {
+        store.commit('update_scoreboard', res.data)
+      }).catch((err) => {
+        store.commit('update_error_message', err.response.data)
+      })
+    },
+    login_success(store) {
+      // update user profile if state is empty
+      if (JSON.stringify(store.state.user_profile) === "[]") {
+        store.commit("update_user_profile");
+      }
+      // update scoreboard if empty
+      if (JSON.stringify(store.state.scoreboard) === '[]') {
+        store.dispatch("get_scoreboard");
+      }
+      // update check log if state is empty
+      if (JSON.stringify(store.state.check_log) === '[]') {
+        store.dispatch("get_check_log");
+      }
     },
   },
 })

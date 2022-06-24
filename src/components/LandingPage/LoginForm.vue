@@ -101,9 +101,6 @@ export default {
     };
   },
   methods: {
-    // logout() {
-    //   this.$root.$emit("logoutResponse");
-    // },
     submit() {
       this.$refs.observer.validate();
     },

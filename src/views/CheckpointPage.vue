@@ -95,22 +95,6 @@ export default {
                 setTimeout(() => { this.error_message = undefined }, 3000)
             })
         },
-        update_check_log: function () {
-            // request
-            this.$axios.request({
-                url: "http://localhost:5000/api/check-in/log",
-                params: {
-                    "userId": this.token.userId
-                }
-            }).then((res) => {
-                // update check_log state
-                this.check_log = res.data
-            }).catch((err) => {
-                // display error message
-                this.error_message = err.response.data
-                setTimeout(() => { this.error_message = undefined }, 6000)
-            })
-        },
         update_checkpoint: function () {
             // request
             this.$axios.request({
@@ -154,7 +138,7 @@ export default {
             this.$store.commit('update_title', this.nav_bar_title)
             // update check log if state is empty
             if (JSON.stringify(this.check_log) === '[]') {
-                this.update_check_log()
+                this.$store.dispatch('get_check_log')
             }
             // update checkpoint if state is empty
             if (JSON.stringify(this.checkpoint) === '[]') {

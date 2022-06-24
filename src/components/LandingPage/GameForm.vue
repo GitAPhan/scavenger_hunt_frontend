@@ -216,6 +216,9 @@ export default {
       this.clear();
       // update cookie
       this.$store.commit("update_token", payload);
+      // check for checklog, user_profile and scoreboard
+      this.$store.dispatch("login_success");
+      // check token check
       if (this.$store.state["check_token"] != undefined) {
         // navigate back to checkpoint if checkToken is present
         this.$store.commit("update_tab_location", 1);
@@ -277,7 +280,13 @@ export default {
           this.request_success(res.data);
         })
         .catch((err) => {
-          this.request_error(err.response.data);
+          var error = "";
+          if (err === undefined) {
+            error = "unknown error. Please contact administrator";
+          } else {
+            error = err.response.data;
+          }
+          this.request_error(error);
         });
     },
   },
@@ -307,7 +316,7 @@ export default {
   display: grid;
   place-items: center;
 }
-// transition animations
+/* // transition animations // */
 .transition_form_flip-enter-active,
 .transition_form_flip-leave-active {
   transition: all 0.45s ease-in-out;

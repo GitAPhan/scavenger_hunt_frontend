@@ -11,23 +11,8 @@ import ScoreCard from '@/components/PlayerPage/ScoreCard.vue'
 export default {
     components: { ScoreCard },
     name: 'score-board-card',
-    methods: {
-        get_scoreboard() {
-            // request
-            this.$axios.request({
-                url: 'http://localhost:5000/api/check-in/standing',
-                params: {
-                    "gameToken": this.token.gameToken
-                }
-            }).then((res) => {
-                this.scoreboard = res.data
-            }).catch((err) => {
-                this.$store.commit('update_error_message', err.response.data)
-            })
-        }
-    },
     mounted() {
-        this.get_scoreboard();
+        this.$store.dispatch('get_scoreboard');
     },
     computed: {
         token: {
