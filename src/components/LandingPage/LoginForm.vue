@@ -132,7 +132,12 @@ export default {
         })
         .catch((err) => {
           this.clear();
-          this.$store.commit("update_error_message", err.response.data);
+          // error message
+          let error_message = "There was an issue communicating with our servers. Please check your connections and try again. If the problem persists, please let our team know and we will address the issue ASAP."
+          if (err.response != undefined) {
+            error_message = err.response.data
+          }
+          this.$store.commit("update_error_message", error_message);
         })
         .then(() => {
           this.loading = !this.loading;
