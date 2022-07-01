@@ -90,8 +90,21 @@ export default {
       this.check_token = undefined;
       this.game = undefined;
       // store the result somewhere for the log tab
-      this.check_log = game_result;
+
+      // duplicate entry when leaving page and return to checkpoint page to complete game
+      // check to eliminate duplicate entry
+      if (
+        !this.check_log.some(function (check) {
+          return check.checkpointId === game_result.checkpointId;
+        })
+      ) {
+        this.check_log = game_result;
+      } else {
+        console.log("duplicate entry for game completion")
+      }
+      this.challenge_type = undefined;
       console.log(this.check_log);
+      console.log(game_result);
       let checkpoint_id = game_result.checkpointId;
       if (
         typeof this.open_checkpoints.find(
@@ -231,17 +244,21 @@ export default {
       if (this.game === undefined && this.check_token != undefined) {
         this.get_checkpoint_info();
       } else if (this.game != undefined && this.check_token != undefined) {
-        this.tab_location = 1;
-        this.is_challenge_active = true;
-        this.challenge_type = this.game.gameType;
+        if (this.tab_location != 1) {
+          this.tab_location = 1;
+        }
+        if (!this.is_challenge_active) {
+          this.is_challenge_active = true;
+        }
+        if (this.challenge_type === undefined) {
+          this.challenge_type = this.game.gameType;
+        }
         console.log("restart existing game");
       }
       // check to see if there are any open checkpoints
       if (this.game === undefined && this.check_token === undefined) {
         this.check_for_open_checkpoints();
       }
-      // listen for games completing
-      this.$root.$on("gameComplete", this.game_complete);
     } else {
       this.$router.push({
         name: "LandingPage",
@@ -253,6 +270,13 @@ export default {
       );
       this.$store.commit("update_tabs", false);
     }
+  },
+  created() {
+    // listen for games completing
+    this.$root.$on("gameComplete", this.game_complete);
+  },
+  beforeDestroy() {
+    this.$root.$off("gameComplete", this.game_complete);
   },
   components: {
     RockPaperScissors,

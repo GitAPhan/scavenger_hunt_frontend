@@ -164,7 +164,7 @@ export default {
             this.last_round = response.lastRound;
             setTimeout(() => {
               this.last_round = undefined;
-            }, 2000);
+            }, 1000);
           }, 500);
 
           // win check
@@ -172,8 +172,9 @@ export default {
             // win code
             setTimeout(() => {
               delete response.lastRound;
+              console.log('game complete, global emit')
               this.$root.$emit("gameComplete", response);
-            }, 3000);
+            }, 1500);
           }
         })
         .catch((err) => {
