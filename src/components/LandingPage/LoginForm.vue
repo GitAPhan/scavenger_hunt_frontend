@@ -29,6 +29,7 @@
               :error-messages="errors"
               placeholder="enter your password"
               required
+              v-on:keyup.enter="login"
               @click:append="show_password = !show_password"
             />
           </validation-provider>
@@ -109,6 +110,7 @@ export default {
       this.password = "";
       this.$refs.observer.reset();
     },
+    enter_to_login: function () {},
     login() {
       // set button to loader
       this.loading = !this.loading;
@@ -133,9 +135,10 @@ export default {
         .catch((err) => {
           this.clear();
           // error message
-          let error_message = "There was an issue communicating with our servers. Please check your connections and try again. If the problem persists, please let our team know and we will address the issue ASAP."
+          let error_message =
+            "There was an issue communicating with our servers. Please check your connections and try again. If the problem persists, please let our team know and we will address the issue ASAP.";
           if (err.response != undefined) {
-            error_message = err.response.data
+            error_message = err.response.data;
           }
           this.$store.commit("update_error_message", error_message);
         })

@@ -61,6 +61,7 @@
               placeholder="enter desired password"
               :error-messages="errors"
               required
+              v-on:keyup.enter="signup"
               :counter="64"
               @click:append="show_password = !show_password"
             ></v-text-field>

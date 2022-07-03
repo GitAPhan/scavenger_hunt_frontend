@@ -31,6 +31,7 @@
               label="code"
               name="room_code"
               placeholder="enter room code"
+              v-on:keyup.enter="join_game"
               required
               full-width
             ></v-text-field>
