@@ -96,6 +96,9 @@ export default {
     // loginResponse
     this.$root.$on("loginResponse", this.login_response);
   },
+  beforeDestroy() {
+    this.$root.$off("loginResponse", this.login_response);
+  },
 };
 </script>
 

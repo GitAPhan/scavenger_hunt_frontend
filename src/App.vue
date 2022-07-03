@@ -3,11 +3,14 @@
     <nav-drawer />
     <nav-bar />
 
-    <v-main>
+    <v-main class="d-flex d-md-none">
       <transition name="transition_page_flip" mode="out-in">
         <router-view />
       </transition>
     </v-main>
+    <v-card class="d-none d-md-flex justify-center">
+      <v-card class="pa-2">This application is only playable on mobile/tablet screens</v-card>
+    </v-card>
   </v-app>
 </template>
 
