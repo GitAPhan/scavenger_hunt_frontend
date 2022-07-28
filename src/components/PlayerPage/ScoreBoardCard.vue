@@ -6,6 +6,15 @@
         :key="score.standing"
         :score="score"
       />
+      <v-btn
+        elevation="3"
+        width="100%"
+        x-large
+        :loading="loading"
+        @click="update_scoreboard"
+        color="rgba(0, 0, 0, 0.178)">
+        UPDATE SCOREBOARD
+      </v-btn>
     </article>
   </div>
 </template>
@@ -14,10 +23,25 @@
 import ScoreCard from "@/components/PlayerPage/ScoreCard.vue";
 export default {
   components: { ScoreCard },
+  data() {
+    return {
+      loading: false
+    }
+  },
   name: "score-board-card",
+  methods: {
+    update_scoreboard() {
+      this.$store.dispatch("get_scoreboard");
+      this.loading = !this.loading
+      setTimeout(()=>{
+        this.loading = !this.loading
+        this.$store.commit("update_tab_location", 0)
+      }, 1500)
+    }
+  },
   mounted() {
     if (JSON.stringify(this.scoreboard) === "[]") {
-      this.$store.dispatch("get_scoreboard");
+      this.update_scoreboard()
     }
   },
   computed: {
