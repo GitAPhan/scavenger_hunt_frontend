@@ -6,17 +6,30 @@
     </article>
     <!-- checkin tab -->
     <article class="log_container" v-else-if="tab_location === 0">
-      <log-card
-        :highlight="false"
-        v-for="card in check_log"
-        :key="card.checkpointId + 0.98"
-        :card="card"
-      />
-      <log-card
-        :highlight="true"
-        v-if="temp_checkin_card != undefined"
-        :card="temp_checkin_card"
-      />
+      <section class="log" v-if="!loading">
+        <log-card
+          :highlight="false"
+          v-for="card in check_log"
+          :key="card.checkpointId + 0.98"
+          :card="card"
+        />
+        <log-card
+          :highlight="true"
+          v-if="temp_checkin_card != undefined && !loading"
+          :card="temp_checkin_card"
+        />
+      </section>
+      <v-btn
+        elevation="3"
+        width="90%"
+        absolute
+        bottom="10px"
+        x-large
+        :loading="loading"
+        @click="update_checkin"
+        color="rgba(0, 0, 0, 0.178)">
+        UPDATE CHECK-IN
+      </v-btn>
     </article>
     <!-- location tab -->
     <article class="log_container" v-else-if="tab_location === 2">
@@ -24,7 +37,6 @@
         v-for="card in checkpoint"
         :key="card.checkpointId + 365.4"
         :card="card"
-        class=""
       />
     </article>
     <!-- ongoing games tab -->
@@ -79,9 +91,20 @@ export default {
       nav_bar_title: "checkpoint",
       temp_checkin_card: undefined,
       open_checkpoints: [],
+      loading: false,
     };
   },
   methods: {
+    update_checkin() {
+      this.loading = !this.loading
+      this.$store.dispatch("get_scoreboard");
+      this.$store.dispatch("get_user_profile")
+      this.$store.dispatch('get_check_log')
+      setTimeout(()=>{
+        this.$store.commit("update_tab_location", 0)
+        this.loading = !this.loading
+      }, 1500)
+    },
     game_complete: function (game_result) {
       console.log(this.check_log);
       this.tab_location = 0;
@@ -342,6 +365,15 @@ export default {
   align-self: start;
   overflow-y: scroll;
   max-height: 75vh;
+  .log {
+  row-gap: 10px;
+  width: 100%;
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  grid-auto-rows: auto;
+  max-height: 100%;
+  }
 }
 .nothing_message {
   text-align: center;

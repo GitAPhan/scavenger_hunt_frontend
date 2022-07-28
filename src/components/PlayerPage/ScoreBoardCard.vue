@@ -8,7 +8,7 @@
       />
       <v-btn
         elevation="3"
-        width="100%"
+        block
         x-large
         :loading="loading"
         @click="update_scoreboard"
@@ -32,6 +32,8 @@ export default {
   methods: {
     update_scoreboard() {
       this.$store.dispatch("get_scoreboard");
+      this.$store.dispatch("get_user_profile")
+      this.$store.dispatch('get_check_log')
       this.loading = !this.loading
       setTimeout(()=>{
         this.loading = !this.loading
