@@ -36,6 +36,7 @@ export default {
 
 <style lang="scss" scoped>
 .profile_card {
+    width: 100%;
     display: grid;
     place-items: center;
     grid-template-columns: 1fr 1fr 1fr;

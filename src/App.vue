@@ -3,7 +3,7 @@
     <nav-drawer />
     <nav-bar />
 
-    <v-main class="d-flex d-md-none">
+    <v-main style="padding: 65px 0px 0px" class="main d-md-none">
       <transition name="transition_page_flip" mode="out-in">
         <router-view />
       </transition>
@@ -33,8 +33,9 @@ export default {
 };
 </script>
 <style>
-.v-main {
-  padding: 50px 0px 0px;
+.main {
+  /* overflow-y: hidden; */
+  max-height: calc(100vh - 55px);
 }
 * {
   color: #3d1a6b;

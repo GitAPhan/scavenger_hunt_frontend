@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="player_container">
         <!-- left tab -->
         <profile-card class="player_tab" v-if="tab_location === 0" />
         <!-- middle tab -->
@@ -76,11 +76,16 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.player_container {
+    height: 100%;
+}
 .player_tab {
-    max-height: 75vh;
+    // max-height: 75vh;
     max-width: 100vw;
-    padding: 0px 10px;
+    padding: 0px 10px 10px;
     overflow-y: scroll;
+    height: 100%;
+    position: relative;
 }
 </style>
