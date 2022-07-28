@@ -164,8 +164,8 @@ export default {
             this.last_round = response.lastRound;
             setTimeout(() => {
               this.last_round = undefined;
-            }, 1000);
-          }, 500);
+            }, 2000);
+          }, 1500);
 
           // win check
           if (response.isActive === 0) {
@@ -174,7 +174,7 @@ export default {
               delete response.lastRound;
               console.log('game complete, global emit')
               this.$root.$emit("gameComplete", response);
-            }, 1500);
+            }, 2500);
           }
         })
         .catch((err) => {
@@ -182,7 +182,7 @@ export default {
         });
       setTimeout(() => {
         this.clear();
-      }, 2000);
+      }, 2500);
     },
   },
   mounted() {

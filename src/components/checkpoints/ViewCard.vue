@@ -23,7 +23,7 @@ export default {
 <style lang="scss" scoped>
 .log_card {
     display: grid;
-    place-items: center;
+    align-items: center;
     width: 90%;
     max-width: 450px;
     border: 1px black solid;
@@ -32,17 +32,25 @@ export default {
         "a b"
         "a c"
         "a d";
-    :nth-child(1) {
+    h2 {
         color: rgba(255, 255, 255, 0.685);
         grid-area: a;
+        justify-self: start;
+        margin-left: 10px;
+    }
+    h5 {
+        margin-right: 10px;
     }
     :nth-child(2) {
+        justify-self: end;
         grid-area: b;
     }
     :nth-child(3) {
+        justify-self: end;
         grid-area: c;
     }
     :nth-child(4) {
+        justify-self: end;
         grid-area: d;
     }
 }

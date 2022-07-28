@@ -34,7 +34,7 @@ export default {
 <style lang="scss" scoped>
 .log_card {
     display: grid;
-    place-items: center;
+    align-items: center;
     width: 90%;
     max-width: 450px;
     min-height: 60px;
@@ -46,11 +46,18 @@ export default {
     :nth-child(1) {
         color: rgba(255, 255, 255, 0.685);
         grid-area: a;
+        justify-self: start;
+        margin-left: 10px;
+    }
+    h5 {
+        margin-right: 10px;
     }
     :nth-child(2) {
+        justify-self: end;
         grid-area: b;
     }
     :nth-child(3) {
+        justify-self: end;
         grid-area: c;
     }
 }
