@@ -236,7 +236,7 @@ export default {
 }
 .make_float {
   position: absolute;
-  top: -40px;
+  top: 0px;
 }
 .game_buttons {
   display: grid;

@@ -110,7 +110,6 @@ export default {
       this.password = "";
       this.$refs.observer.reset();
     },
-    enter_to_login: function () {},
     login() {
       // set button to loader
       this.loading = !this.loading;

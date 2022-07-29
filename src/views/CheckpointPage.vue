@@ -23,7 +23,7 @@
         elevation="3"
         width="90%"
         absolute
-        bottom="10px"
+        bottom
         x-large
         :loading="loading"
         @click="update_checkin"
